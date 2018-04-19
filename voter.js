@@ -126,11 +126,7 @@ var steem = require('steem');
                     if (err) {
                         throw err;
                     }
-                    if (status == 1) {
-                        console.log('Steem Blog Voted');
-                    } else {
-                        console.log('Skipped for voting');
-                    }
+                    console.log('Steem Blog Voted');
                 });
             });
         } else {
@@ -139,11 +135,7 @@ var steem = require('steem');
                 if (err) {
                     throw err;
                 }
-                if (status == 1) {
-                    console.log('Steem Blog Voted');
-                } else {
-                    console.log('Skipped for voting');
-                }
+                console.log('Skipped for voting');
             });
         }
     };
