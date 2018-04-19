@@ -10,9 +10,8 @@ var steem = require('steem');
     var host = 'http://localhost:8000';
     var email = "gabrielarlo11@gmail.com";
     var password = "password";
-    // steem.api.setOptions({ url: 'wss://ws.golos.io' }); // assuming websocket is work at ws.golos.io
-    // steem.config.set('address_prefix', 'GLS');
-    // steem.config.set('chain_id', '782a3039b478c839e4cb0c941ff4eaeb7df40bdd68bd441afd444b9da763de12');
+    steem.api.setOptions({ url: 'https://api.steemit.com' });
+    steem.config.set('address_prefix', 'STM');
 
     w.last_task_id = null;
 
@@ -57,7 +56,6 @@ var steem = require('steem');
                 setTimeout(function () {
                     w.init();
                 }, 10000);
-                // w.init();
             })
             .catch(function (err) {
                 // console.error(err);
@@ -132,24 +130,31 @@ var steem = require('steem');
             w.get_vote_candidate(function (result) {
                 if (result.status == 200) {
                     console.log("Currently on voting que: TaskID-", result.data.task_id);
+
+                    var permalink = result.data.permalink;
+                    permalink = permalink.substring(permalink.indexOf('@') + 1);
+                    author = result.data.author;
+                    permalink = permalink.substring(author.length + 1);
+
                     var item = {
                         username: voter.username,
                         password: voter.password,
-                        author: result.data.author,
-                        permalink: result.data.permalink,
+                        author: author,
+                        permalink: permalink,
                         weight: voter.weight,
                         item_id: result.data.id,
                     };
                     w.vote_it(item, function (response) {
                         if (response.status == 200) {
                             w.update_candidate_status(item.item_id, voter, 1);
+                            console.info(response.msg);
                         } else {
                             w.update_candidate_status(item.item_id, voter, 2);
-                            console.log(response.msg);
+                            console.error(response.msg);
                         }
                     });
                 } else {
-                    console.log(result.msg);
+                    console.error(result.msg);
                 }
             });
         } else {
