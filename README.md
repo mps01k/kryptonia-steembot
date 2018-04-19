@@ -9,6 +9,12 @@ _Right now it is on **BETA** version_
 npm install
 ```
 
+## Basic Setup
+```
+var host = 'http://localhost:8000';
+var email = "gabrielarlo11@gmail.com";
+var password = "password";
+```
 
 ## Running
 ```
