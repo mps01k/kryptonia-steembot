@@ -1,0 +1,13 @@
+{
+    "database": {
+        "host": "localhost",
+        "user": "root",
+        "password": "",
+        "database": "steembot"
+    },
+    "account": {
+        "host": "http://localhost:8000",
+        "email": "email@gmail.com",
+        "password": "password"
+    }
+}

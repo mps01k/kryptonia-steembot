@@ -6,10 +6,12 @@ var axios = require('axios');
 var mysql = require('mysql');
 var steem = require('steem');
 
+var config = require('./config.json');
+
 (function (w, $) {
-    var host = 'http://localhost:8000';
-    var email = "gabrielarlo11@gmail.com";
-    var password = "password";
+    var host = config.account.host;
+    var email = config.account.email;
+    var password = config.account.password;
     steem.api.setOptions({
         url: 'https://api.steemit.com'
     });
@@ -18,10 +20,10 @@ var steem = require('steem');
     w.last_task_id = null;
 
     var db_con = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: '',
-        database: 'steembot'
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database
     });
 
     w.init = function () {

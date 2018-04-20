@@ -1,7 +1,21 @@
 {
+  "name": "kryptonia-steembot",
+  "version": "0.0.1",
+  "description": "Steem Post voter for Kryptonia",
+  "main": "voter.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gabrielarlo/kryptonia-steembot"
+  },
+  "keywords": [
+    "kryptonia",
+    "steembot"
+  ],
+  "author": "NineCloud Gabriel",
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
+    "express": "^4.16.3",
     "http": "0.0.0",
     "https": "^1.0.0",
     "jquery": "^3.3.1",
