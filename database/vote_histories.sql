@@ -33,6 +33,7 @@ CREATE TABLE `vote_histories` (
   `item_id` int(11) NOT NULL,
   `voter` varchar(191) DEFAULT NULL,
   `weight` double NOT NULL DEFAULT '0',
+  `status` int(11) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

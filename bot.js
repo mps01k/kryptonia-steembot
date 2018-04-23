@@ -23,6 +23,7 @@ var voter = require('./app/controller/voter.js');
                 console.log("Start Voting");
                 voter.prepare(function (status) {
                     if (status == 'done') {
+                        console.log('Voting Done');
                         setTimeout(function () {
                             w.init(result.offset);
                         }, 5000);
