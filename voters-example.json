@@ -1,0 +1,14 @@
+{
+    "users": [
+        {
+            "username": "user",
+            "password": "password"
+        }
+    ],
+    "tags": [
+        "kryptonia",
+        "superiorcoin"
+    ],
+    "max_power": 10000,
+    "min_power": 100
+}
