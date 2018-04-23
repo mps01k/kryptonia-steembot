@@ -41,20 +41,20 @@ module.exports = {
                     counter = 0;
                     voter_index = 0;
                     round_counter = 1;
-                    start_time = moment().add(500, 'millisecond').unix();
+                    start_time = moment().add(5, 'millisecond').unix();
                     while (counter < $voters_count) {
                         now_unix_1 = moment().unix();
                         if (start_time >= now_unix_1) {
                             // break;
                         } else {
                             post_index = 0;
-                            start_time = moment().add(500, 'millisecond').unix();
+                            start_time = moment().add(5, 'millisecond').unix();
                             while (post_index < $posts_count) {
                                 now_unix_2 = moment().unix();
                                 if (start_time >= now_unix_2) {
                                     // break;
                                 } else {
-                                    console.info('Round #', round_counter, 'post', post_index, 'voter', voter_index);
+                                    console.info('Round #', round_counter, 'post_index', post_index, 'voter_index', voter_index);
                                     weight = {
                                         max_weight: voters.max_weight,
                                         min_weight: voters.min_weight
@@ -110,36 +110,43 @@ module.exports = {
                                         author: post.author,
                                         permalink: permalink,
                                     };
+                                    set = 0;
                                     if ($meta.length > 0) {
-                                        set = 0;
+                                        found = 0;
                                         $meta.forEach((tag) => {
                                             if (tags.indexOf(tag) >= 0) {
-                                                console.info("Max Voting");
-                                                module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
-                                                    if (counter == 0 && set == 0) {
-                                                        module.exports.comment_to_it(item, voter, 'max', function (response) {
-                                                            console.log(response);
-                                                        });
-                                                    }
-                                                    callback(res2);
-                                                });
-                                            } else {
-                                                console.info("Min Voting");
-                                                module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
-                                                    if (counter == 0 && set == 0) {
-                                                        module.exports.comment_to_it(item, voter, 'min', function (response) {
-                                                            console.log(response);
-                                                        });
-                                                    }
-                                                    callback(res2);
-                                                });
+                                                found = 1;
                                             }
                                             set++;
                                         });
+                                        if (found == 1 & set == $meta.length) {
+                                            console.info("Max Voting");
+                                            module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
+                                                if (counter == 0) {
+                                                    console.info("Commenting for Max");
+                                                    module.exports.comment_to_it(item, voter, 'max', function (response) {
+                                                        console.log(response);
+                                                    });
+                                                }
+                                                callback(res2);
+                                            });
+                                        } else if (found == 0 & set == $meta.length) {
+                                            console.info("Min Voting");
+                                            module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
+                                                if (counter == 0) {
+                                                    console.info("Commenting for Min");
+                                                    module.exports.comment_to_it(item, voter, 'min', function (response) {
+                                                        console.log(response);
+                                                    });
+                                                }
+                                                callback(res2);
+                                            });
+                                        }
                                     } else {
                                         console.info("Min Voting");
                                         module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
                                             if (counter == 0) {
+                                                console.info("Commenting for Min");
                                                 module.exports.comment_to_it(item, voter, 'min', function (response) {
                                                     console.log(response);
                                                 });
@@ -162,7 +169,7 @@ module.exports = {
                 setter.set_status(post.id, 2);
                 callback('Invalid Link');
             }
-        });            
+        });
     },
 
     get_permalink: (url, callback) => {
@@ -251,7 +258,11 @@ module.exports = {
                 if (err == null) {
                     callback("Not Commented");
                 }
-                callback("Commented", {author: parentAuthor, permalink: parentPermalink, commenter: author});
+                callback("Commented", {
+                    author: parentAuthor,
+                    permalink: parentPermalink,
+                    commenter: author
+                });
             });
         } else if (weight_type == 'min') {
             console.info("Min Commenting");
@@ -267,7 +278,11 @@ If you want to get 100% upvote, these are the conditions:
                 if (err == null) {
                     callback("Not Commented");
                 }
-                callback("Commented", {author: parentAuthor, permalink: parentPermalink, commenter: author});
+                callback("Commented", {
+                    author: parentAuthor,
+                    permalink: parentPermalink,
+                    commenter: author
+                });
             });
         }
     },

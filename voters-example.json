@@ -9,6 +9,6 @@
         "kryptonia",
         "superiorcoin"
     ],
-    "max_power": 10000,
-    "min_power": 100
+    "max_weight": 10000,
+    "min_weight": 100
 }

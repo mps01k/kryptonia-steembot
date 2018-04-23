@@ -41,7 +41,7 @@ module.exports = {
 
     set_status: (item_id, status, internal = false) => {
         updated_at = moment().format('YYYY-MM-DD HH:mm:ss');
-        var sql = `UPDATE steem_vote_lists SET status = ${status}, updated_at = '${updated_at}' WHERE id = ${item_id}`;
+        var sql = `UPDATE steem_vote_lists SET status = ${status}, updated_at = '${updated_at}' WHERE id = ${item_id} AND status <> 1`;
         db_con.query(sql, function (err, result) {
             if (err != null) {
                 // throw err;
