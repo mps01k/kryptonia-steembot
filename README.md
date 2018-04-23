@@ -12,19 +12,19 @@ npm install
 ## Basic Setup
 ```
 var host = 'http://localhost:8000';
-var email = "gabrielarlo11@gmail.com";
+var email = "kryptonia_user@gmail.com";
 var password = "password";
 ```
 
 ## Running
 ```
-node voter.js
+node bot.js
 ```
 
 ### To Use PM2 after installing its dependencies. run this codes.
 **Starting**
 ```
-pm2 start voter.js
+pm2 start bot.js
 ```
 
 **Show Status**
