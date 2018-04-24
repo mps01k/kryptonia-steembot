@@ -14,7 +14,7 @@ var voters = require('./../../voters.json');
 var fetcher = require('./fetcher.js');
 
 module.exports = {
-    prepare: (callback) => {
+    prepare: (initial, callback) => {
         users = voters.users;
         if (users.length > 0) {
             getter.get_all_unvoted(function (res) {
@@ -41,14 +41,14 @@ module.exports = {
                     counter = 0;
                     voter_index = 0;
                     round_counter = 1;
-                    start_time = moment().add(5, 'millisecond').unix();
+                    start_time = moment().add(1, 'millisecond').unix();
                     while (counter < $voters_count) {
                         now_unix_1 = moment().unix();
                         if (start_time >= now_unix_1) {
                             // break;
                         } else {
                             post_index = 0;
-                            start_time = moment().add(5, 'millisecond').unix();
+                            start_time = moment().add(1, 'millisecond').unix();
                             while (post_index < $posts_count) {
                                 now_unix_2 = moment().unix();
                                 if (start_time >= now_unix_2) {
@@ -90,7 +90,7 @@ module.exports = {
     },
 
     validate_post: (post, voter, weight, tags, counter, callback) => {
-        console.info("Post Validation");
+        console.info("Post Validation for counter", counter);
         module.exports.get_permalink(post.link, function (permalink) {
             if (permalink != 'Invalid Link') {
                 console.info("Getting Post Content", author, permalink);
@@ -258,6 +258,7 @@ module.exports = {
                 if (err == null) {
                     callback("Not Commented");
                 }
+                setter.comment_status(item, voter);
                 callback("Commented", {
                     author: parentAuthor,
                     permalink: parentPermalink,
@@ -278,6 +279,7 @@ If you want to get 100% upvote, these are the conditions:
                 if (err == null) {
                     callback("Not Commented");
                 }
+                setter.comment_status(item, voter);
                 callback("Commented", {
                     author: parentAuthor,
                     permalink: parentPermalink,

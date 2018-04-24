@@ -60,4 +60,20 @@ module.exports = {
             module.exports.set_status(i, 1, true);
         }
     },
+
+    comment_status: (item, voter) => {
+        updated_at = moment().format('YYYY-MM-DD HH:mm:ss');
+        var sql = `UPDATE steem_vote_lists SET commented = 1, updated_at = '${updated_at}' WHERE item_id = ${item.id} AND voter = '${voter.username}'`;
+        db_con.query(sql, function (err, result) {
+            if (err != null) {
+                // throw err;
+                if (internal == false) {
+                    console.error('Comment Status Not Updated');
+                }
+            }
+            if (internal == false) {
+                console.log("Item", item_id, "'commented' Updated");
+            }
+        });
+    },
 };
