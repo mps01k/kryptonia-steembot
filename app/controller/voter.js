@@ -1,5 +1,6 @@
 var steem = require('steem');
 var moment = require('moment');
+var window = require('window');
 
 steem.api.setOptions({
     url: 'https://api.steemit.com'
@@ -12,85 +13,72 @@ var setter = require('./../model/setter.js');
 var voters = require('./../../voters.json');
 
 var fetcher = require('./fetcher.js');
+var api = require('./api.js');
 
 module.exports = {
-    prepare: (initial, callback) => {
-        users = voters.users;
-        if (users.length > 0) {
-            getter.get_all_unvoted(function (res) {
-                if (res == 'all-done') {
-                    callback('done');
-                } else {
-                    $posts = [];
-                    i = 0;
-                    res.forEach((element) => {
-                        $posts.push({
-                            id: element.id,
-                            task_id: element.task_id,
-                            author: element.author,
-                            link: element.link,
-                            by_bot: element.by_bot,
-                            status: element.status,
-                            created_at: element.created_at,
-                            updated_at: element.updated_at
-                        });
-                    });
-                    $voters = users;
-                    $voters_count = users.length;
-                    $posts_count = res.length;
-                    counter = 0;
-                    voter_index = 0;
-                    round_counter = 1;
-                    start_time = moment().add(1, 'millisecond').unix();
-                    while (counter < $voters_count) {
-                        now_unix_1 = moment().unix();
-                        if (start_time >= now_unix_1) {
-                            // break;
-                        } else {
-                            post_index = 0;
-                            start_time = moment().add(1, 'millisecond').unix();
-                            while (post_index < $posts_count) {
-                                now_unix_2 = moment().unix();
-                                if (start_time >= now_unix_2) {
-                                    // break;
-                                } else {
-                                    console.info('Round #', round_counter, 'post_index', post_index, 'voter_index', voter_index);
-                                    weight = {
-                                        max_weight: voters.max_weight,
-                                        min_weight: voters.min_weight
-                                    };
-                                    tags = voters.tags;
-                                    module.exports.validate_post($posts[parseInt(post_index)], $voters[parseInt(voter_index)], weight, tags, counter, function (res) {
-                                        console.log(res);
-                                    });
-                                    round_counter++;
-                                    voter_index++;
-                                    post_index++;
-                                    start_time = moment().add(5, 'seconds').unix();
-                                    if (voter_index == $voters_count) {
-                                        voter_index = 0;
-                                    }
-                                }
-                            }
-                            counter++;
-                            if (counter == $voters_count) {
-                                setTimeout(function () {
-                                    // setter.set_all_done($posts[parseInt(post_index)].id, $posts[parseInt($posts_count) - 1].id);
-                                    callback('done');
-                                }, 5000);
-                            }
-                        }
-                    }
-                }
-            });
+    start_voting_process: (post_data, callback) => {
+        posts = post_data.posts;
+        post_index = post_data.post_index;
+        voter_index = post_data.voter_index;
+        round = post_data.round;
+
+        weight = {
+            max_weight: voters.max_weight,
+            min_weight: voters.min_weight
+        };
+        tags = voters.tags;
+        s_voters = voters.users;
+        batch = module.exports.get_batch(round, posts.length);
+        module.exports.validate_post(posts[parseInt(post_index)], s_voters[parseInt(voter_index)], weight, tags, batch, function (res) {
+            post_index++;
+            if (post_index >= posts.length) {
+                post_index = 0;
+            }
+            voter_index++;
+            if (voter_index >= s_voters.length) {
+                voter_index = 0;
+            }
+            return_data = {
+                posts: posts,
+                post_index: post_index,
+                voter_index: voter_index,
+                round: round + 1,
+            };
+            if (res == 'validated') {
+                console.log("Successfully Voted");                
+                callback(return_data);
+            } else {
+                console.log(res);
+                callback(return_data);
+            }
+        });
+    },
+
+    get_batch: (round, posts_count) => {
+        if (round <= posts_count) {
+            return 1;
         } else {
-            console.error("No Voters");
-            callback('done');
+            current = round / posts_count;
+            return Math.ceil(current);
         }
     },
 
-    validate_post: (post, voter, weight, tags, counter, callback) => {
-        console.info("Post Validation for counter", counter);
+    check_tags: (post_tags, req_tags, callback) => {
+        res = 'not_found';
+        i = 0;
+        post_tags.forEach((tag) => {
+            if (req_tags.indexOf(tag) >= 0) {
+                res = 'found';
+            }
+            i++;
+        });
+        if (i >= post_tags.length) {
+            callback(res);
+        }
+    },
+
+    validate_post: (post, voter, weight, tags, batch, callback) => {
+        console.info("Post Validation for batch", batch);
         module.exports.get_permalink(post.link, function (permalink) {
             if (permalink != 'Invalid Link') {
                 console.info("Getting Post Content", author, permalink);
@@ -110,48 +98,53 @@ module.exports = {
                                         author: post.author,
                                         permalink: permalink,
                                     };
-                                    set = 0;
                                     if ($meta.length > 0) {
-                                        found = 0;
-                                        $meta.forEach((tag) => {
-                                            if (tags.indexOf(tag) >= 0) {
-                                                found = 1;
-                                            }
-                                            set++;
+                                        module.exports.check_tags($meta, tags, function (check_result) {
+                                            is_found = check_result;
+                                            console.log("Is Found:", is_found);
+                                            if (is_found == 'found') {
+                                                console.info("Max Voting");
+                                                module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
+                                                    if (batch == 1) {
+                                                        console.info("Commenting for Max");
+                                                        module.exports.comment_to_it(item, voter, 'max', function (response, other) {
+                                                            console.log(res2, response);
+                                                            callback('validated');
+                                                        });
+                                                    } else {
+                                                        console.log(res2);
+                                                        callback('validated');
+                                                    }
+                                                });
+                                            } else {
+                                                console.info("Min Voting");
+                                                module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
+                                                    if (batch == 1) {
+                                                        console.info("Commenting for Min");
+                                                        module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                            console.log(res2, response);
+                                                            callback('validated');
+                                                        });
+                                                    } else {
+                                                        console.log(res2);
+                                                        callback('validated');
+                                                    }
+                                                });
+                                            } 
                                         });
-                                        if (found == 1 & set == $meta.length) {
-                                            console.info("Max Voting");
-                                            module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
-                                                if (counter == 0) {
-                                                    console.info("Commenting for Max");
-                                                    module.exports.comment_to_it(item, voter, 'max', function (response) {
-                                                        console.log(response);
-                                                    });
-                                                }
-                                                callback(res2);
-                                            });
-                                        } else if (found == 0 & set == $meta.length) {
-                                            console.info("Min Voting");
-                                            module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
-                                                if (counter == 0) {
-                                                    console.info("Commenting for Min");
-                                                    module.exports.comment_to_it(item, voter, 'min', function (response) {
-                                                        console.log(response);
-                                                    });
-                                                }
-                                                callback(res2);
-                                            });
-                                        }
                                     } else {
                                         console.info("Min Voting");
                                         module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
-                                            if (counter == 0) {
+                                            if (batch == 1) {
                                                 console.info("Commenting for Min");
-                                                module.exports.comment_to_it(item, voter, 'min', function (response) {
-                                                    console.log(response);
+                                                module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                    console.log(res2, response);
+                                                    callback('validated');
                                                 });
+                                            } else {
+                                                console.log(res2);
+                                                callback('validated');
                                             }
-                                            callback(res2);
                                         });
                                     }
                                 } else {
@@ -259,11 +252,7 @@ module.exports = {
                     callback("Not Commented");
                 }
                 setter.comment_status(item, voter);
-                callback("Commented", {
-                    author: parentAuthor,
-                    permalink: parentPermalink,
-                    commenter: author
-                });
+                callback("Commented");
             });
         } else if (weight_type == 'min') {
             console.info("Min Commenting");
@@ -280,11 +269,7 @@ If you want to get 100% upvote, these are the conditions:
                     callback("Not Commented");
                 }
                 setter.comment_status(item, voter);
-                callback("Commented", {
-                    author: parentAuthor,
-                    permalink: parentPermalink,
-                    commenter: author
-                });
+                callback("Commented");
             });
         }
     },

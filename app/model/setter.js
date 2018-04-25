@@ -67,13 +67,9 @@ module.exports = {
         db_con.query(sql, function (err, result) {
             if (err != null) {
                 // throw err;
-                if (internal == false) {
-                    console.error('Comment Status Not Updated');
-                }
+                console.error('Comment Status Not Updated');
             }
-            if (internal == false) {
-                console.log("Item", item_id, "'commented' Updated");
-            }
+            console.log("Item", item.id, "'commented' Updated");
         });
     },
 };
