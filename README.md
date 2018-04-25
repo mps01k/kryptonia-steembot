@@ -41,3 +41,28 @@ pm2 monit
 ```
 pm2 stop 0
 ```
+
+### APIs
+**Get all post**
+```
+http://localhost:3000/api/get-all-post
+```
+
+**Get all voted post**
+```
+http://localhost:3000/api/get-all-voted
+```
+
+**Get all unvoted post**
+```
+http://localhost:3000/api/get-all-unvoted
+```
+
+**Get voting history**
+```
+http://localhost:3000/api/voting-history
+```
+
+### Interface Manager
+```
+https://github.com/gabrielarlo/kryptonia-steembot-manager

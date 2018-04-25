@@ -2,6 +2,7 @@ var http = require('http');
 var https = require('https');
 var window = require('window');
 var jquery = require('jquery');
+var express = require('express');
 
 var config = require('./config.json');
 var fetcher = require('./app/controller/fetcher.js');
@@ -43,7 +44,7 @@ var voters = require('./voters.json');
                             console.log('Voting Done');
                             setTimeout(function () {
                                 w.init(0, 0, null);
-                            }, 2000);
+                            }, 5000);
                         }
                     });
                     return;
@@ -51,7 +52,7 @@ var voters = require('./voters.json');
                     console.log('Nothing to Vote');
                     setTimeout(function () {
                         w.init(0, 0, null);
-                    }, 2000);
+                    }, 5000);
                     return;
                 }
             }, 5000);
@@ -67,7 +68,7 @@ var voters = require('./voters.json');
                         if (q_result == 'all-done') {
                             setTimeout(function () {
                                 w.init(0, 0, null);
-                            }, 2000);
+                            }, 5000);
                         } else {
                             posts = q_result;
                             post_data = {
@@ -78,13 +79,69 @@ var voters = require('./voters.json');
                             };
                             setTimeout(function () {
                                 w.init(0, 1, post_data);
-                            }, 2000);
+                            }, 5000);
                         }
                     });
                 }
             });
             return;
         }
+    };
+
+    w.serve_api = (port = 1433) => {
+        var app = express();
+
+        var server = app.listen(port, function () {
+            var host = server.address().address;
+            if (host == '::') {
+                host = 'localhost';
+            }
+            var port = server.address().port;
+
+            console.log("Serving on http://" + host + ":" + port);
+        });
+
+        app.get('/api/get-all-post', function (req, res) {
+            api.get_all_post(function (result) {
+                res.json(result);
+            });
+        });
+
+        app.get('/api/get-all-voted', function (req, res) {
+            api.get_posts_by_status(1, function (result) {
+                res.json(result);
+            });
+        });
+
+        app.get('/api/get-all-unvoted', function (req, res) {
+            api.get_posts_by_status(0, function (result) {
+                res.json(result);
+            });
+        });
+
+        app.get('/api/get-all-invalid-link', function (req, res) {
+            api.get_posts_by_status(2, function (result) {
+                res.json(result);
+            });
+        });
+
+        app.get('/api/get-all-low-reputation', function (req, res) {
+            api.get_posts_by_status(3, function (result) {
+                res.json(result);
+            });
+        });
+
+        app.get('/api/get-all-old-post', function (req, res) {
+            api.get_posts_by_status(4, function (result) {
+                res.json(result);
+            });
+        });
+
+        app.get('/api/get-all-errored', function (req, res) {
+            api.get_posts_by_status(5, function (result) {
+                res.json(result);
+            });
+        });
     };
 
     /**
@@ -95,4 +152,5 @@ var voters = require('./voters.json');
     offset = 0;
     // w.init(offset);
     w.init(offset, 0, null);
+    w.serve_api();
 })(window, jquery);
