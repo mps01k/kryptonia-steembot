@@ -1,6 +1,6 @@
 {
   "name": "kryptonia-steembot",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Steem Post voter for Kryptonia",
   "main": "voter.js",
   "repository": {

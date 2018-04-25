@@ -26,16 +26,23 @@ module.exports = {
     },
 
     save_hostory: (item) => {
-        var values = [
-            [item.item_id, item.voter, item.weight, item.status, item.created_at, item.updated_at],
-        ];
-        var sql = `INSERT INTO vote_histories (item_id, voter, weight, status, created_at, updated_at) VALUES ?`;
-        db_con.query(sql, [values], function (err, result) {
-            if (err) {
-                // throw err;
-                console.error('History Item Not Saved');
+        var sql1 = `SELECT * FROM vote_histories WHERE item_id = ${item.item_id} AND voter = '${item.voter}'`;
+        db_con.query(sql1, function (err, res) {
+            if (err == null) {
+                if (res.length == 0) {
+                    var values = [
+                        [item.item_id, item.voter, item.weight, item.status, item.created_at, item.updated_at],
+                    ];
+                    var sql = `INSERT INTO vote_histories (item_id, voter, weight, status, created_at, updated_at) VALUES ?`;
+                    db_con.query(sql, [values], function (err, result) {
+                        if (err) {
+                            // throw err;
+                            console.error('History Item Not Saved');
+                        }
+                        console.log('Item', item.item_id, "Voted by", item.voter, "Status", item.status);
+                    });
+                }
             }
-            console.log('Item', item.item_id, "Voted by", item.voter, "Status", item.status);
         });
     },
 
