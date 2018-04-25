@@ -43,7 +43,7 @@ var voters = require('./voters.json');
                             console.log('Voting Done');
                             setTimeout(function () {
                                 w.init(0, 0, null);
-                            }, 1000);
+                            }, 2000);
                         }
                     });
                     return;
@@ -67,7 +67,7 @@ var voters = require('./voters.json');
                         if (q_result == 'all-done') {
                             setTimeout(function () {
                                 w.init(0, 0, null);
-                            }, 3000);
+                            }, 2000);
                         } else {
                             posts = q_result;
                             post_data = {
@@ -76,7 +76,9 @@ var voters = require('./voters.json');
                                 voter_index: 0,
                                 round: 1,
                             };
-                            w.init(0, 1, post_data);
+                            setTimeout(function () {
+                                w.init(0, 1, post_data);
+                            }, 2000);
                         }
                     });
                 }
