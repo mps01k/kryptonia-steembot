@@ -55,6 +55,20 @@ module.exports = {
         });
     },
 
+    get_voting_history: (callback) => {
+        var sql = `SELECT * FROM vote_histories`;
+        db_con.query(sql, function (err, result, fields) {
+            if (err) {
+                throw err;
+            }
+            if (result.length == 0) {
+                callback('none');
+            } else {
+                callback(result);
+            }
+        });
+    },
+
     get_posts_by_status: (status, callback) => {
         /**
          * legends

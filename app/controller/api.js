@@ -37,4 +37,15 @@ module.exports = {
             }
         });
     },
+
+    get_voting_history: (callback) => {
+        console.log('--> Request from voting-history');
+        getter.get_voting_history(function (result) {
+            if (result != 'none') {
+                callback(result);
+            } else {
+                callback("Empty");
+            }
+        });
+    },
 };

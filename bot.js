@@ -142,6 +142,12 @@ var voters = require('./voters.json');
                 res.json(result);
             });
         });
+
+        app.get('/api/voting-history', function (req, res) {
+            api.get_voting_history(function (result) {
+                res.json(result);
+            });
+        });
     };
 
     /**
