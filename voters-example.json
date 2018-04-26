@@ -5,6 +5,8 @@
             "password": "password"
         }
     ],
+    "blocked": [],
+    "prio": [],
     "tags": [
         "kryptonia",
         "superiorcoin"

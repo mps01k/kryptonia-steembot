@@ -78,6 +78,7 @@ module.exports = {
          * 3 - author low reputation score
          * 4 - older 7 days
          * 5 - error in voting
+         * 6 - blocklisted
          */
         var sql = `SELECT * FROM steem_vote_lists WHERE status = ${status}`;
         db_con.query(sql, function (err, result, fields) {

@@ -77,6 +77,22 @@ module.exports = {
         }
     },
 
+    check_blocked: (block_list, author, callback) => {
+        if (block_list.indexOf(author) >= 0) {
+            callback('found');
+        } else {
+            callback('not-found');
+        }
+    },
+
+    check_prios: (prio_list, author, callback) => {
+        if (prio_list.indexOf(author) >= 0) {
+            callback('found');
+        } else {
+            callback('not-found');
+        }
+    },
+
     validate_post: (post, voter, weight, tags, batch, callback) => {
         console.info("Post Validation for batch", batch);
         module.exports.get_permalink(post.link, function (permalink) {
@@ -91,61 +107,212 @@ module.exports = {
                             console.info("Checking Author Reputation Score");
                             module.exports.reputation_score(res1.author_reputation, function (score) {
                                 if (score >= 25) {
-                                    $meta = JSON.parse(res1.json_metadata).tags;
-                                    item = {
-                                        id: post.id,
-                                        task_id: post.task_id,
-                                        author: post.author,
-                                        permalink: permalink,
-                                    };
-                                    if ($meta.length > 0) {
-                                        module.exports.check_tags($meta, tags, function (check_result) {
-                                            is_found = check_result;
-                                            console.log("Is Found:", is_found);
-                                            if (is_found == 'found') {
-                                                console.info("Max Voting");
-                                                module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
-                                                    if (batch == 1) {
-                                                        console.info("Commenting for Max");
-                                                        module.exports.comment_to_it(item, voter, 'max', function (response, other) {
-                                                            console.log(res2, response);
-                                                            callback('validated');
+                                    prio_list = voters.prio;
+                                    block_list = voters.blocked;
+                                    if (block_list.length > 0) {
+                                        module.exports.check_blocked(block_list, author, function (blocked_result) {
+                                            if (blocked_result == 'not-found') {
+                                                if (prio_list.length > 0) {
+                                                    module.exports.check_prios(prio_list, author, function (prio_result) {
+                                                        if (prio_result == 'found') {
+                                                            console.info("Max Voting [Prio]");
+                                                            item = {
+                                                                id: post.id,
+                                                                task_id: post.task_id,
+                                                                author: post.author,
+                                                                permalink: permalink,
+                                                            };
+                                                            module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
+                                                                if (batch == 1) {
+                                                                    console.info("Commenting for Max");
+                                                                    module.exports.comment_to_it(item, voter, 'max', function (response, other) {
+                                                                        console.log(res2, response);
+                                                                        callback('validated');
+                                                                    });
+                                                                } else {
+                                                                    console.log(res2);
+                                                                    callback('validated');
+                                                                }
+                                                            });
+                                                        } else {
+                                                            $meta = JSON.parse(res1.json_metadata).tags;
+                                                            item = {
+                                                                id: post.id,
+                                                                task_id: post.task_id,
+                                                                author: post.author,
+                                                                permalink: permalink,
+                                                            };
+                                                            if ($meta.length > 0) {
+                                                                module.exports.check_tags($meta, tags, function (check_result) {
+                                                                    is_found = check_result;
+                                                                    console.log("Tag Found?:", is_found);
+                                                                    if (is_found == 'found') {
+                                                                        console.info("Max Voting");
+                                                                        module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
+                                                                            if (batch == 1) {
+                                                                                console.info("Commenting for Max");
+                                                                                module.exports.comment_to_it(item, voter, 'max', function (response, other) {
+                                                                                    console.log(res2, response);
+                                                                                    callback('validated');
+                                                                                });
+                                                                            } else {
+                                                                                console.log(res2);
+                                                                                callback('validated');
+                                                                            }
+                                                                        });
+                                                                    } else {
+                                                                        console.info("Min Voting");
+                                                                        module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
+                                                                            if (batch == 1) {
+                                                                                console.info("Commenting for Min");
+                                                                                module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                                                    console.log(res2, response);
+                                                                                    callback('validated');
+                                                                                });
+                                                                            } else {
+                                                                                console.log(res2);
+                                                                                callback('validated');
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
+                                                            } else {
+                                                                console.info("Min Voting");
+                                                                module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
+                                                                    if (batch == 1) {
+                                                                        console.info("Commenting for Min");
+                                                                        module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                                            console.log(res2, response);
+                                                                            callback('validated');
+                                                                        });
+                                                                    } else {
+                                                                        console.log(res2);
+                                                                        callback('validated');
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+                                                    });
+                                                } else {
+                                                    $meta = JSON.parse(res1.json_metadata).tags;
+                                                    item = {
+                                                        id: post.id,
+                                                        task_id: post.task_id,
+                                                        author: post.author,
+                                                        permalink: permalink,
+                                                    };
+                                                    if ($meta.length > 0) {
+                                                        module.exports.check_tags($meta, tags, function (check_result) {
+                                                            is_found = check_result;
+                                                            console.log("Tag Found?:", is_found);
+                                                            if (is_found == 'found') {
+                                                                console.info("Max Voting");
+                                                                module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
+                                                                    if (batch == 1) {
+                                                                        console.info("Commenting for Max");
+                                                                        module.exports.comment_to_it(item, voter, 'max', function (response, other) {
+                                                                            console.log(res2, response);
+                                                                            callback('validated');
+                                                                        });
+                                                                    } else {
+                                                                        console.log(res2);
+                                                                        callback('validated');
+                                                                    }
+                                                                });
+                                                            } else {
+                                                                console.info("Min Voting");
+                                                                module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
+                                                                    if (batch == 1) {
+                                                                        console.info("Commenting for Min");
+                                                                        module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                                            console.log(res2, response);
+                                                                            callback('validated');
+                                                                        });
+                                                                    } else {
+                                                                        console.log(res2);
+                                                                        callback('validated');
+                                                                    }
+                                                                });
+                                                            }
                                                         });
                                                     } else {
-                                                        console.log(res2);
-                                                        callback('validated');
-                                                    }
-                                                });
-                                            } else {
-                                                console.info("Min Voting");
-                                                module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
-                                                    if (batch == 1) {
-                                                        console.info("Commenting for Min");
-                                                        module.exports.comment_to_it(item, voter, 'min', function (response, other) {
-                                                            console.log(res2, response);
-                                                            callback('validated');
+                                                        console.info("Min Voting");
+                                                        module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
+                                                            if (batch == 1) {
+                                                                console.info("Commenting for Min");
+                                                                module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                                    console.log(res2, response);
+                                                                    callback('validated');
+                                                                });
+                                                            } else {
+                                                                console.log(res2);
+                                                                callback('validated');
+                                                            }
                                                         });
-                                                    } else {
-                                                        console.log(res2);
-                                                        callback('validated');
                                                     }
-                                                });
-                                            } 
-                                        });
-                                    } else {
-                                        console.info("Min Voting");
-                                        module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
-                                            if (batch == 1) {
-                                                console.info("Commenting for Min");
-                                                module.exports.comment_to_it(item, voter, 'min', function (response, other) {
-                                                    console.log(res2, response);
-                                                    callback('validated');
-                                                });
+                                                }
                                             } else {
-                                                console.log(res2);
-                                                callback('validated');
+                                                setter.set_status(post.id, 6);
+                                                callback('Author is blocklisted');
                                             }
                                         });
+                                    } else {
+                                        $meta = JSON.parse(res1.json_metadata).tags;
+                                        item = {
+                                            id: post.id,
+                                            task_id: post.task_id,
+                                            author: post.author,
+                                            permalink: permalink,
+                                        };
+                                        if ($meta.length > 0) {
+                                            module.exports.check_tags($meta, tags, function (check_result) {
+                                                is_found = check_result;
+                                                console.log("Tag Found?:", is_found);
+                                                if (is_found == 'found') {
+                                                    console.info("Max Voting");
+                                                    module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
+                                                        if (batch == 1) {
+                                                            console.info("Commenting for Max");
+                                                            module.exports.comment_to_it(item, voter, 'max', function (response, other) {
+                                                                console.log(res2, response);
+                                                                callback('validated');
+                                                            });
+                                                        } else {
+                                                            console.log(res2);
+                                                            callback('validated');
+                                                        }
+                                                    });
+                                                } else {
+                                                    console.info("Min Voting");
+                                                    module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
+                                                        if (batch == 1) {
+                                                            console.info("Commenting for Min");
+                                                            module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                                console.log(res2, response);
+                                                                callback('validated');
+                                                            });
+                                                        } else {
+                                                            console.log(res2);
+                                                            callback('validated');
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        } else {
+                                            console.info("Min Voting");
+                                            module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
+                                                if (batch == 1) {
+                                                    console.info("Commenting for Min");
+                                                    module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                        console.log(res2, response);
+                                                        callback('validated');
+                                                    });
+                                                } else {
+                                                    console.log(res2);
+                                                    callback('validated');
+                                                }
+                                            });
+                                        }
                                     }
                                 } else {
                                     setter.set_status(post.id, 3);
