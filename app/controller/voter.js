@@ -409,7 +409,7 @@ module.exports = {
             console.info("Max Commenting");
             body = `Congratulations! You got a <b>100% upvote</b> from @kryptonia Steem bot for following the conditions:
 
-1. You run a task on <a href="http://csyd.es/Kryptonia">Kryptonia.io</a> who can get an upvote from the Kryptonia-Steemit bot.
+1. You ran a task on < a href = "http://csyd.es/Kryptonia" > Kryptonia.io < /a> and got upvoted from the Kryptonia-Steemit bot.
 *For those who want to join the growing community, grab your account here: <a href="http://csyd.es/Kryptonia">kryptonia.io</a>.
 2. You used the tags <a href="https://steemit.com/trending/kryptonia">KRYPTONIA</a> & <a href="https://steemit.com/trending/superiorcoin">SUPERIORCOIN</a> in your  Steemit post.
 3. The Steemit reputation score was above <b>25</b>.`;
