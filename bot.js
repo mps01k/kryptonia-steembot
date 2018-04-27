@@ -88,7 +88,7 @@ var voters = require('./voters.json');
         }
     };
 
-    w.serve_api = (port = 1433) => {
+    w.serve_api = (port) => {
         var app = express();
 
         var server = app.listen(port, function () {
@@ -158,5 +158,5 @@ var voters = require('./voters.json');
     offset = 0;
     // w.init(offset);
     w.init(offset, 0, null);
-    w.serve_api();
+    w.serve_api(1433);
 })(window, jquery);
