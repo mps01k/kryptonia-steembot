@@ -204,7 +204,7 @@ var voters = require('./voters.json');
      * node voter.js
      */
     offset = 0;
-    // w.init(offset);
+    w.init(offset);
     w.init(offset, 0, null);
     w.serve_api(1433);
 })(window, jquery);
