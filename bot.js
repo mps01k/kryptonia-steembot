@@ -185,6 +185,12 @@ var voters = require('./voters.json');
             });
         });
 
+        app.get('/api/get-all-blocked', function (req, res) {
+            api.get_posts_by_status(6, function (result) {
+                res.json(result);
+            });
+        });
+
         app.get('/api/voting-history', function (req, res) {
             api.get_voting_history(function (result) {
                 res.json(result);
