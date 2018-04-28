@@ -27,6 +27,20 @@ module.exports = {
         });
     },
 
+    get_post_item: (id, callback) => {
+        var sql = `SELECT * FROM steem_vote_lists WHERE id = ${id}`;
+        db_con.query(sql, [values], function (err, result, fields) {
+            if (err) {
+                throw err;
+            }
+            if (result.length == 0) {
+                callback('not-found');
+            } else {
+                callback(result[0]);
+            }
+        });
+    },
+
     get_all_unvoted: (callback) => {
         var sql = `SELECT * FROM steem_vote_lists WHERE status = 0`;
         db_con.query(sql, function (err, result, fields) {
@@ -65,6 +79,20 @@ module.exports = {
                 callback('none');
             } else {
                 callback(result);
+            }
+        });
+    },
+
+    get_errored_vote: (callback) => {
+        var sql = `SELECT * FROM vote_histories WHERE status = 0 LIMIT 1`;
+        db_con.query(sql, function (err, result, fields) {
+            if (err) {
+                throw err;
+            }
+            if (result.length == 0) {
+                callback('none');
+            } else {
+                callback(result[0]);
             }
         });
     },

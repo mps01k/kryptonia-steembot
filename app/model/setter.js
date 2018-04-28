@@ -41,6 +41,18 @@ module.exports = {
                         }
                         console.log('Item', item.item_id, "Voted by", item.voter, "Status", item.status);
                     });
+                } else {
+                    if (item.status == 1) {
+                        id = res[0].id;
+                        var sql = `UPDATE vote_histories SET status = 1 WHERE id = ${id}`;
+                        db_con.query(sql, function (err, result) {
+                            if (err) {
+                                // throw err;
+                                console.error('History Item Not Saved');
+                            }
+                            console.log('Item', item.item_id, "Voted by", item.voter, "Status", item.status);
+                        });
+                    }
                 }
             }
         });
