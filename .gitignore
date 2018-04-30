@@ -4,4 +4,3 @@ node_modules
 config.json
 old
 voters.json
-package-lock.json
