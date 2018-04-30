@@ -4,6 +4,7 @@ var window = require('window');
 var jquery = require('jquery');
 var express = require('express');
 var cors = require('cors');
+var bodyParser = require('body-parser');
 
 var config = require('./config.json');
 var fetcher = require('./app/controller/fetcher.js');
@@ -132,6 +133,8 @@ var voters = require('./voters.json');
     w.serve_api = (port) => {
         var app = express();
         app.use(cors());
+        app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({ extended: true }));
 
         var server = app.listen(port, function () {
             var host = server.address().address;
@@ -193,6 +196,18 @@ var voters = require('./voters.json');
 
         app.get('/api/voting-history', function (req, res) {
             api.get_voting_history(function (result) {
+                res.json(result);
+            });
+        });
+
+        app.post('/search-post', function (req, res) {
+            api.search_post(req.body.value, req.body.status, function (result) {
+                res.json(result); 
+            });
+        });
+
+        app.post('/search-history', function (req, res) {
+            api.search_history(req.body.value, function (result) {
                 res.json(result);
             });
         });

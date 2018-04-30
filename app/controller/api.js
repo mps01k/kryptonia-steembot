@@ -48,4 +48,26 @@ module.exports = {
             }
         });
     },
+
+    search_post: (value, status, callback) => {
+        console.log('--> Searching Post', value);
+        getter.search_post(value, status, function (result) {
+            if (result != 'none') {
+                callback(result);
+            } else {
+                callback("No Match");
+            }
+        });
+    },
+
+    search_history: (value, callback) => {
+        console.log('--> Searching History', value);
+        getter.search_history(value, function (result) {
+            if (result != 'none') {
+                callback(result);
+            } else {
+                callback("No Match");
+            }
+        });
+    },
 };

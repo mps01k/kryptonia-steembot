@@ -119,5 +119,33 @@ module.exports = {
                 callback(result);
             }
         });
+    }, 
+
+    search_post: (value, status, callback) => {
+        var sql = `SELECT * FROM steem_vote_lists WHERE status = ${status} AND (author LIKE '%${value}%' OR link LIKE '%${value}%')`;
+        db_con.query(sql, function (err, result, fields) {
+            if (err) {
+                throw err;
+            }
+            if (result.length == 0) {
+                callback('none');
+            } else {
+                callback(result);
+            }
+        });
+    },
+
+    search_history: (value, callback) => {
+        var sql = `SELECT * FROM vote_histories WHERE author LIKE '%${value}%'`;
+        db_con.query(sql, function (err, result, fields) {
+            if (err) {
+                throw err;
+            }
+            if (result.length == 0) {
+                callback('none');
+            } else {
+                callback(result);
+            }
+        });
     }
 };
