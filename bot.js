@@ -200,13 +200,13 @@ var voters = require('./voters.json');
             });
         });
 
-        app.post('/search-post', function (req, res) {
+        app.post('/api/search-post', function (req, res) {
             api.search_post(req.body.value, req.body.status, function (result) {
                 res.json(result); 
             });
         });
 
-        app.post('/search-history', function (req, res) {
+        app.post('/api/search-history', function (req, res) {
             api.search_history(req.body.value, function (result) {
                 res.json(result);
             });
