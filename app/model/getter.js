@@ -136,7 +136,7 @@ module.exports = {
     },
 
     search_history: (value, callback) => {
-        var sql = `SELECT * FROM vote_histories WHERE author LIKE '%${value}%'`;
+        var sql = `SELECT * FROM vote_histories WHERE voter LIKE '%${value}%'`;
         db_con.query(sql, function (err, result, fields) {
             if (err) {
                 throw err;
