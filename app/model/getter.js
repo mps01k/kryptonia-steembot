@@ -29,7 +29,7 @@ module.exports = {
 
     get_post_item: (id, callback) => {
         var sql = `SELECT * FROM steem_vote_lists WHERE id = ${id}`;
-        db_con.query(sql, [values], function (err, result, fields) {
+        db_con.query(sql, function (err, result, fields) {
             if (err) {
                 throw err;
             }
