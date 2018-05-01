@@ -122,7 +122,7 @@ module.exports = {
     }, 
 
     search_post: (value, callback) => {
-        var sql = `SELECT * FROM steem_vote_lists WHERE author LIKE '%${value}%' OR link LIKE '%${value}%'`;
+        var sql = `SELECT * FROM steem_vote_lists WHERE author LIKE '%${value}%' OR link LIKE '%${value}%' ORDER BY updated_at DESC`;
         db_con.query(sql, function (err, result, fields) {
             if (err) {
                 throw err;
@@ -136,7 +136,7 @@ module.exports = {
     },
 
     search_history: (value, callback) => {
-        var sql = `SELECT * FROM vote_histories WHERE voter LIKE '%${value}%'`;
+        var sql = `SELECT * FROM vote_histories WHERE voter LIKE '%${value}%' ORDER BY updated_at DESC`;
         db_con.query(sql, function (err, result, fields) {
             if (err) {
                 throw err;
