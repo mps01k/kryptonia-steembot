@@ -147,5 +147,33 @@ module.exports = {
                 callback(result);
             }
         });
-    }
+    },
+
+    get_detail: (item_id, callback) => {
+        var sql = `SELECT * FROM steem_vote_lists WHERE id = ${item_id} LIMIT 1`;
+        db_con.query(sql, function (err, result, fields) {
+            if (err) {
+                throw err;
+            }
+            if (result.length == 0) {
+                callback('none');
+            } else {
+                callback(result[0]);
+            }
+        });
+    },
+
+    get_histories: (item_id, callback) => {
+        var sql = `SELECT * FROM vote_histories WHERE item_id = ${item_id} ORDER BY updated_at DESC`;
+        db_con.query(sql, function (err, result, fields) {
+            if (err) {
+                throw err;
+            }
+            if (result.length == 0) {
+                callback('none');
+            } else {
+                callback(result);
+            }
+        });
+    },
 };

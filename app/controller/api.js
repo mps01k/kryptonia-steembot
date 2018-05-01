@@ -70,4 +70,29 @@ module.exports = {
             }
         });
     },
+
+    get_item_detail: (item_id, callback) => {
+        console.log('--> Getting Details');
+        getter.get_detail(item_id, function (result) {
+            if (result != 'none') {
+                getter.get_histories(item_id, function (result2) {
+                    if (result2 != 'none') {
+                        ret = {
+                            detail: result,
+                            histories: result2
+                        }
+                        callback(ret);
+                    } else {
+                        ret = {
+                            detail: result,
+                            histories: null
+                        }
+                        callback(ret);
+                    }
+                });
+            } else {
+                callback("Not Found");
+            }
+        });
+    },
 };

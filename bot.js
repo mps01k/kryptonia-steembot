@@ -134,7 +134,9 @@ var voters = require('./voters.json');
         var app = express();
         app.use(cors());
         app.use(bodyParser.json());
-        app.use(bodyParser.urlencoded({ extended: true }));
+        app.use(bodyParser.urlencoded({
+            extended: true
+        }));
 
         var server = app.listen(port, function () {
             var host = server.address().address;
@@ -202,12 +204,18 @@ var voters = require('./voters.json');
 
         app.post('/api/search-post', function (req, res) {
             api.search_post(req.body.value, function (result) {
-                res.json(result); 
+                res.json(result);
             });
         });
 
         app.post('/api/search-history', function (req, res) {
             api.search_history(req.body.value, function (result) {
+                res.json(result);
+            });
+        });
+
+        app.post('/api/get-item-detail', function (req, res) {
+            api.get_item_detail(req.body.id, function (result) {
                 res.json(result);
             });
         });
