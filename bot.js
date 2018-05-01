@@ -45,13 +45,11 @@ var voters = require('./voters.json');
                             }, 500);
                         }
                     });
-                    return;
                 } else {
                     console.log('Nothing to Vote');
                     setTimeout(function () {
                         w.init(0, 0, null);
                     }, 500);
-                    return;
                 }
             }, 500);
             return;
