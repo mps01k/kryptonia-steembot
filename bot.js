@@ -127,6 +127,5 @@ var voters = require('./voters.json');
      * node bot.js
      */
     offset = 0;
-    w.init(offset);
     w.init(offset, 0, null);
 })(window, jquery);
