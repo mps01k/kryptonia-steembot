@@ -70,7 +70,7 @@ module.exports = {
     },
 
     get_voting_history: (callback) => {
-        var sql = `SELECT * FROM vote_histories`;
+        var sql = `SELECT * FROM vote_histories ORDER BY updated_at DESC`;
         db_con.query(sql, function (err, result, fields) {
             if (err) {
                 throw err;
