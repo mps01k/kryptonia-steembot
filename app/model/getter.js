@@ -121,8 +121,8 @@ module.exports = {
         });
     }, 
 
-    search_post: (value, status, callback) => {
-        var sql = `SELECT * FROM steem_vote_lists WHERE status = ${status} AND (author LIKE '%${value}%' OR link LIKE '%${value}%')`;
+    search_post: (value, callback) => {
+        var sql = `SELECT * FROM steem_vote_lists WHERE author LIKE '%${value}%' OR link LIKE '%${value}%'`;
         db_con.query(sql, function (err, result, fields) {
             if (err) {
                 throw err;

@@ -201,7 +201,7 @@ var voters = require('./voters.json');
         });
 
         app.post('/api/search-post', function (req, res) {
-            api.search_post(req.body.value, req.body.status, function (result) {
+            api.search_post(req.body.value, function (result) {
                 res.json(result); 
             });
         });
