@@ -9,5 +9,8 @@
         "host": "http://localhost:8000",
         "email": "email@gmail.com",
         "password": "password"
+    },
+    "options": {
+        "enable_comment": 1
     }
 }

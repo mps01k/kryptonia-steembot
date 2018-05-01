@@ -11,6 +11,7 @@ var getter = require('./../model/getter.js');
 var setter = require('./../model/setter.js');
 
 var voters = require('./../../voters.json');
+var config = require('./../../config.json');
 
 var fetcher = require('./fetcher.js');
 var api = require('./api.js');
@@ -124,11 +125,11 @@ module.exports = {
                                                             };
                                                             module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
                                                                 if (batch == 1) {
-                                                                    // console.info("Commenting for Max");
-                                                                    // module.exports.comment_to_it(item, voter, 'max', function (response, other) {
-                                                                    //     console.log(res2, response);
-                                                                    //     callback('validated');
-                                                                    // });
+                                                                    console.info("Commenting for Max");
+                                                                    module.exports.comment_to_it(item, voter, 'max', function (response, other) {
+                                                                        console.log(res2, response);
+                                                                        callback('validated');
+                                                                    });
                                                                 } else {
                                                                     console.log(res2);
                                                                     callback('validated');
@@ -150,11 +151,11 @@ module.exports = {
                                                                         console.info("Max Voting");
                                                                         module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
                                                                             if (batch == 1) {
-                                                                                // console.info("Commenting for Max");
-                                                                                // module.exports.comment_to_it(item, voter, 'max', function (response, other) {
-                                                                                //     console.log(res2, response);
-                                                                                //     callback('validated');
-                                                                                // });
+                                                                                console.info("Commenting for Max");
+                                                                                module.exports.comment_to_it(item, voter, 'max', function (response, other) {
+                                                                                    console.log(res2, response);
+                                                                                    callback('validated');
+                                                                                });
                                                                             } else {
                                                                                 console.log(res2);
                                                                                 callback('validated');
@@ -164,11 +165,11 @@ module.exports = {
                                                                         console.info("Min Voting");
                                                                         module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
                                                                             if (batch == 1) {
-                                                                                // console.info("Commenting for Min");
-                                                                                // module.exports.comment_to_it(item, voter, 'min', function (response, other) {
-                                                                                //     console.log(res2, response);
-                                                                                //     callback('validated');
-                                                                                // });
+                                                                                console.info("Commenting for Min");
+                                                                                module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                                                    console.log(res2, response);
+                                                                                    callback('validated');
+                                                                                });
                                                                             } else {
                                                                                 console.log(res2);
                                                                                 callback('validated');
@@ -180,11 +181,11 @@ module.exports = {
                                                                 console.info("Min Voting");
                                                                 module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
                                                                     if (batch == 1) {
-                                                                        // console.info("Commenting for Min");
-                                                                        // module.exports.comment_to_it(item, voter, 'min', function (response, other) {
-                                                                        //     console.log(res2, response);
-                                                                        //     callback('validated');
-                                                                        // });
+                                                                        console.info("Commenting for Min");
+                                                                        module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                                            console.log(res2, response);
+                                                                            callback('validated');
+                                                                        });
                                                                     } else {
                                                                         console.log(res2);
                                                                         callback('validated');
@@ -209,11 +210,11 @@ module.exports = {
                                                                 console.info("Max Voting");
                                                                 module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
                                                                     if (batch == 1) {
-                                                                        // console.info("Commenting for Max");
-                                                                        // module.exports.comment_to_it(item, voter, 'max', function (response, other) {
-                                                                        //     console.log(res2, response);
-                                                                        //     callback('validated');
-                                                                        // });
+                                                                        console.info("Commenting for Max");
+                                                                        module.exports.comment_to_it(item, voter, 'max', function (response, other) {
+                                                                            console.log(res2, response);
+                                                                            callback('validated');
+                                                                        });
                                                                     } else {
                                                                         console.log(res2);
                                                                         callback('validated');
@@ -223,11 +224,11 @@ module.exports = {
                                                                 console.info("Min Voting");
                                                                 module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
                                                                     if (batch == 1) {
-                                                                        // console.info("Commenting for Min");
-                                                                        // module.exports.comment_to_it(item, voter, 'min', function (response, other) {
-                                                                        //     console.log(res2, response);
-                                                                        //     callback('validated');
-                                                                        // });
+                                                                        console.info("Commenting for Min");
+                                                                        module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                                            console.log(res2, response);
+                                                                            callback('validated');
+                                                                        });
                                                                     } else {
                                                                         console.log(res2);
                                                                         callback('validated');
@@ -239,11 +240,11 @@ module.exports = {
                                                         console.info("Min Voting");
                                                         module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
                                                             if (batch == 1) {
-                                                                // console.info("Commenting for Min");
-                                                                // module.exports.comment_to_it(item, voter, 'min', function (response, other) {
-                                                                //     console.log(res2, response);
-                                                                //     callback('validated');
-                                                                // });
+                                                                console.info("Commenting for Min");
+                                                                module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                                    console.log(res2, response);
+                                                                    callback('validated');
+                                                                });
                                                             } else {
                                                                 console.log(res2);
                                                                 callback('validated');
@@ -269,49 +270,49 @@ module.exports = {
                                                 is_found = check_result;
                                                 console.log("Tag Found?:", is_found);
                                                 if (is_found == 'found') {
-                                                    // console.info("Max Voting");
-                                                    // module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
-                                                    //     if (batch == 1) {
-                                                    //         console.info("Commenting for Max");
-                                                    //         module.exports.comment_to_it(item, voter, 'max', function (response, other) {
-                                                    //             console.log(res2, response);
-                                                    //             callback('validated');
-                                                    //         });
-                                                    //     } else {
-                                                    //         console.log(res2);
-                                                    //         callback('validated');
-                                                    //     }
-                                                    // });
+                                                    console.info("Max Voting");
+                                                    module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
+                                                        if (batch == 1) {
+                                                            console.info("Commenting for Max");
+                                                            module.exports.comment_to_it(item, voter, 'max', function (response, other) {
+                                                                console.log(res2, response);
+                                                                callback('validated');
+                                                            });
+                                                        } else {
+                                                            console.log(res2);
+                                                            callback('validated');
+                                                        }
+                                                    });
                                                 } else {
-                                                    // console.info("Min Voting");
-                                                    // module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
-                                                    //     if (batch == 1) {
-                                                    //         console.info("Commenting for Min");
-                                                    //         module.exports.comment_to_it(item, voter, 'min', function (response, other) {
-                                                    //             console.log(res2, response);
-                                                    //             callback('validated');
-                                                    //         });
-                                                    //     } else {
-                                                    //         console.log(res2);
-                                                    //         callback('validated');
-                                                    //     }
-                                                    // });
+                                                    console.info("Min Voting");
+                                                    module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
+                                                        if (batch == 1) {
+                                                            console.info("Commenting for Min");
+                                                            module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                                console.log(res2, response);
+                                                                callback('validated');
+                                                            });
+                                                        } else {
+                                                            console.log(res2);
+                                                            callback('validated');
+                                                        }
+                                                    });
                                                 }
                                             });
                                         } else {
-                                            // console.info("Min Voting");
-                                            // module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
-                                            //     if (batch == 1) {
-                                            //         console.info("Commenting for Min");
-                                            //         module.exports.comment_to_it(item, voter, 'min', function (response, other) {
-                                            //             console.log(res2, response);
-                                            //             callback('validated');
-                                            //         });
-                                            //     } else {
-                                            //         console.log(res2);
-                                            //         callback('validated');
-                                            //     }
-                                            // });
+                                            console.info("Min Voting");
+                                            module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
+                                                if (batch == 1) {
+                                                    console.info("Commenting for Min");
+                                                    module.exports.comment_to_it(item, voter, 'min', function (response, other) {
+                                                        console.log(res2, response);
+                                                        callback('validated');
+                                                    });
+                                                } else {
+                                                    console.log(res2);
+                                                    callback('validated');
+                                                }
+                                            });
                                         }
                                     }
                                 } else {
@@ -388,56 +389,60 @@ module.exports = {
     },
 
     comment_to_it: (item, voter, weight_type, callback) => {
-        wif = steem.auth.toWif(voter.username, voter.password, 'posting');
+        if (config.options.enable_comment === 1) {
+            wif = steem.auth.toWif(voter.username, voter.password, 'posting');
 
-        parentAuthor = item.author;
-        parentPermalink = item.permalink;
-        commentPermlink = steem.formatter.commentPermlink(parentAuthor, parentPermalink);
+            parentAuthor = item.author;
+            parentPermalink = item.permalink;
+            commentPermlink = steem.formatter.commentPermlink(parentAuthor, parentPermalink);
 
-        author = voter.username;
-        permalink = commentPermlink;
-        title = "Comment from kryptonia.io";
-        jsonMetadata = {
-            "tags": [
-                "kryptonia",
-                "superiorcoin",
-                "cryptobabe"
-            ]
-        };
+            author = voter.username;
+            permalink = commentPermlink;
+            title = "Comment from kryptonia.io";
+            jsonMetadata = {
+                "tags": [
+                    "kryptonia",
+                    "superiorcoin",
+                    "cryptobabe"
+                ]
+            };
 
-        if (weight_type == 'max') {
-            console.info("Max Commenting");
-            body = `Congratulations! You got a <b>100% upvote</b> from @kryptonia Steem bot for following the conditions:
+            if (weight_type == 'max') {
+                console.info("Max Commenting");
+                body = `Congratulations! You got a <b>100% upvote</b> from @kryptonia Steem bot for following the conditions:
 
 1. You ran a task on <a href="http://csyd.es/Kryptonia">Kryptonia.io</a> and got upvoted from the Kryptonia-Steemit bot.
 *For those who want to join the growing community, grab your account here: <a href="http://csyd.es/Kryptonia">kryptonia.io</a>.
 2. You used the tags <a href="https://steemit.com/trending/kryptonia">KRYPTONIA</a> & <a href="https://steemit.com/trending/superiorcoin">SUPERIORCOIN</a> in your  Steemit post.
 3. The Steemit reputation score was above <b>25</b>.`;
-            steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
-                // console.log(err, result);
-                if (err == null) {
-                    callback("Not Commented");
-                }
-                setter.comment_status(item, voter);
-                callback("Commented");
-            });
-        } else if (weight_type == 'min') {
-            console.info("Min Commenting");
-            body = `Congratulations! You got a <b>10% upvote</b> from @kryptonia Steem bot!  
+                steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
+                    // console.log(err, result);
+                    if (err == null) {
+                        callback("Not Commented");
+                    }
+                    setter.comment_status(item, voter);
+                    callback("Commented");
+                });
+            } else if (weight_type == 'min') {
+                console.info("Min Commenting");
+                body = `Congratulations! You got a <b>10% upvote</b> from @kryptonia Steem bot!  
 If you want to get 100% upvote, these are the conditions:
 
 1. Only people who run a task on <a href="http://csyd.es/Kryptonia">Kryptonia.io</a> who can get an upvote from the Kryptonia-Steemit bot.
 *If you do not have an account, grab here <a href="http://csyd.es/Kryptonia">kryptonia.io</a>.
 2. Users must use the tags <a href="https://steemit.com/trending/kryptonia">KRYPTONIA</a> & <a href="https://steemit.com/trending/superiorcoin">SUPERIORCOIN</a> in their Steemit post.
 3. The Steemit reputation score is not below <b>25</b>.`;
-            steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
-                // console.log(err, result);
-                if (err == null) {
-                    callback("Not Commented");
-                }
-                setter.comment_status(item, voter);
-                callback("Commented");
-            });
+                steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
+                    // console.log(err, result);
+                    if (err == null) {
+                        callback("Not Commented");
+                    }
+                    setter.comment_status(item, voter);
+                    callback("Commented");
+                });
+            }
+        } else {
+            callback("Comment is not enabled");
         }
     },
 };
