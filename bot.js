@@ -52,7 +52,6 @@ var voters = require('./voters.json');
                     }, 500);
                 }
             }, 500);
-            return;
         } else if (is_voting == 2) {
             console.log("Start Salvage Voting");
             salvager.salvage_candidate(function (s_result) {
@@ -119,7 +118,6 @@ var voters = require('./voters.json');
                     });
                 }
             });
-            return;
         }
     };
 
