@@ -25,6 +25,7 @@ node bot.js
 **Starting**
 ```
 pm2 start bot.js
+pm2 start bot_api.js
 ```
 
 **Show Status**
