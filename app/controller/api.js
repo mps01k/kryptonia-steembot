@@ -49,9 +49,9 @@ module.exports = {
         });
     },
 
-    search_post: (value, status, callback) => {
+    search_post: (value, callback) => {
         console.log('--> Searching Post', value);
-        getter.search_post(value, status, function (result) {
+        getter.search_post(value, function (result) {
             if (result != 'none') {
                 callback(result);
             } else {
