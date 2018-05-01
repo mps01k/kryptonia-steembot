@@ -42,16 +42,16 @@ var voters = require('./voters.json');
                             console.log('Voting Done');
                             setTimeout(function () {
                                 w.init(0, 0, null);
-                            }, 500);
+                            }, 5000);
                         }
                     });
                 } else {
                     console.log('Nothing to Vote');
                     setTimeout(function () {
                         w.init(0, 0, null);
-                    }, 500);
+                    }, 5000);
                 }
-            }, 500);
+            }, 5000);
         } else if (is_voting == 2) {
             console.log("Start Salvage Voting");
             salvager.salvage_candidate(function (s_result) {
@@ -59,7 +59,7 @@ var voters = require('./voters.json');
                     console.log('Salvage Voting Done');
                     setTimeout(function () {
                         w.init(0, 0, null);
-                    }, 500);
+                    }, 5000);
                 } else {
                     getter.get_post_item(s_result.item_id, function (g_res) {
                         voter_list = voters.users;
@@ -80,14 +80,14 @@ var voters = require('./voters.json');
                                         console.log("Salvage Voting:", v_res);
                                         setTimeout(function () {
                                             w.init(0, 2, null);
-                                        }, 500);
+                                        }, 5000);
                                     });
                                 });
                             }
                         });
                         setTimeout(function () {
                             w.init(0, 0, null);
-                        }, 500);
+                        }, 5000);
                     });
                 }
             });
@@ -102,7 +102,7 @@ var voters = require('./voters.json');
                         if (q_result == 'all-done') {
                             setTimeout(function () {
                                 w.init(0, 2, null);
-                            }, 500);
+                            }, 5000);
                         } else {
                             posts = q_result;
                             post_data = {
@@ -113,7 +113,7 @@ var voters = require('./voters.json');
                             };
                             setTimeout(function () {
                                 w.init(0, 1, post_data);
-                            }, 500);
+                            }, 5000);
                         }
                     });
                 }
