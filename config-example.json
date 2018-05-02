@@ -11,6 +11,7 @@
         "password": "password"
     },
     "options": {
-        "enable_comment": 1
+        "enable_comment": 1,
+        "salt": "salt"
     }
 }

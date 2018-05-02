@@ -25,7 +25,7 @@ module.exports = {
         });
     },
 
-    save_hostory: (item) => {
+    save_history: (item) => {
         var sql1 = `SELECT * FROM vote_histories WHERE item_id = ${item.item_id} AND voter = '${item.voter}'`;
         db_con.query(sql1, function (err, res) {
             if (err == null) {

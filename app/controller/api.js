@@ -3,6 +3,7 @@ var store = require('store2');
 var moment = require('moment');
 
 var getter = require('./../model/getter.js');
+var config = require('./../../config.json');
 
 module.exports = {
     set_it: (key, data, clear = false) => {
@@ -94,5 +95,17 @@ module.exports = {
                 callback("Not Found");
             }
         });
+    },
+
+    encode_ep(str) {
+        str = str + config.options.salt;
+        var base = Buffer.from(str).toString('base64');
+        return base;
+    }, 
+
+    decode_ep(base) {
+        var str = Buffer.from(base, 'base64').toString();
+        str = str.substring(0, str.length - config.options.salt.length);
+        return str;
     },
 };

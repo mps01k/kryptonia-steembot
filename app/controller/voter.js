@@ -137,17 +137,17 @@ module.exports = {
                                                             });
                                                         } else {
                                                             $meta = JSON.parse(res1.json_metadata).tags;
-                                                            item = {
-                                                                id: post.id,
-                                                                task_id: post.task_id,
-                                                                author: post.author,
-                                                                permalink: permalink,
-                                                            };
                                                             if ($meta.length > 0) {
                                                                 module.exports.check_tags($meta, tags, function (check_result) {
                                                                     is_found = check_result;
                                                                     console.log("Tag Found?:", is_found);
                                                                     if (is_found == 'found') {
+                                                                        item = {
+                                                                            id: post.id,
+                                                                            task_id: post.task_id,
+                                                                            author: post.author,
+                                                                            permalink: permalink,
+                                                                        };
                                                                         console.info("Max Voting");
                                                                         module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
                                                                             if (batch == 1) {
@@ -162,6 +162,12 @@ module.exports = {
                                                                             }
                                                                         });
                                                                     } else {
+                                                                        item = {
+                                                                            id: post.id,
+                                                                            task_id: post.task_id,
+                                                                            author: post.author,
+                                                                            permalink: permalink,
+                                                                        };
                                                                         console.info("Min Voting");
                                                                         module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
                                                                             if (batch == 1) {
@@ -178,6 +184,12 @@ module.exports = {
                                                                     }
                                                                 });
                                                             } else {
+                                                                item = {
+                                                                    id: post.id,
+                                                                    task_id: post.task_id,
+                                                                    author: post.author,
+                                                                    permalink: permalink,
+                                                                };
                                                                 console.info("Min Voting");
                                                                 module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
                                                                     if (batch == 1) {
@@ -196,17 +208,17 @@ module.exports = {
                                                     });
                                                 } else {
                                                     $meta = JSON.parse(res1.json_metadata).tags;
-                                                    item = {
-                                                        id: post.id,
-                                                        task_id: post.task_id,
-                                                        author: post.author,
-                                                        permalink: permalink,
-                                                    };
                                                     if ($meta.length > 0) {
                                                         module.exports.check_tags($meta, tags, function (check_result) {
                                                             is_found = check_result;
                                                             console.log("Tag Found?:", is_found);
                                                             if (is_found == 'found') {
+                                                                item = {
+                                                                    id: post.id,
+                                                                    task_id: post.task_id,
+                                                                    author: post.author,
+                                                                    permalink: permalink,
+                                                                };
                                                                 console.info("Max Voting");
                                                                 module.exports.vote_it(item, voter, weight.max_weight, function (res2) {
                                                                     if (batch == 1) {
@@ -221,6 +233,12 @@ module.exports = {
                                                                     }
                                                                 });
                                                             } else {
+                                                                item = {
+                                                                    id: post.id,
+                                                                    task_id: post.task_id,
+                                                                    author: post.author,
+                                                                    permalink: permalink,
+                                                                };
                                                                 console.info("Min Voting");
                                                                 module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
                                                                     if (batch == 1) {
@@ -237,6 +255,12 @@ module.exports = {
                                                             }
                                                         });
                                                     } else {
+                                                        item = {
+                                                            id: post.id,
+                                                            task_id: post.task_id,
+                                                            author: post.author,
+                                                            permalink: permalink,
+                                                        };
                                                         console.info("Min Voting");
                                                         module.exports.vote_it(item, voter, weight.min_weight, function (res2) {
                                                             if (batch == 1) {
@@ -259,7 +283,7 @@ module.exports = {
                                         });
                                     } else {
                                         $meta = JSON.parse(res1.json_metadata).tags;
-                                        item = {
+                                        let item = {
                                             id: post.id,
                                             task_id: post.task_id,
                                             author: post.author,
@@ -360,7 +384,7 @@ module.exports = {
         wif = steem.auth.toWif(voter.username, voter.password, 'posting');
         steem.broadcast.vote(wif, voter.username, item.author, item.permalink, weight, function (err, result) {
             // console.log(err);
-            if (err != null) {
+            if (err !== null) {
                 new_item = {
                     item_id: item.id,
                     voter: voter.username,
@@ -369,7 +393,7 @@ module.exports = {
                     created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
                     updated_at: moment().format('YYYY-MM-DD HH:mm:ss'),
                 };
-                setter.save_hostory(new_item);
+                setter.save_history(new_item);
                 setter.set_status(item.id, 5);
                 callback('Not Voted');
             } else {
@@ -381,7 +405,7 @@ module.exports = {
                     created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
                     updated_at: moment().format('YYYY-MM-DD HH:mm:ss'),
                 };
-                setter.save_hostory(new_item);
+                setter.save_history(new_item);
                 setter.set_status(item.id, 1);
                 callback('Voted');
             }

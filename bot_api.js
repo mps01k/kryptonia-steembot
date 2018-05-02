@@ -100,6 +100,11 @@ var getter = require('./app/model/getter.js');
                 res.json(result);
             });
         });
+
+        app.get('/api/get-voters-list', function (req, res) {
+            console.log(req.headers.authorization);
+            console.log(req.headers.username);
+        });
     };
 
     /**
