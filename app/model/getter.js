@@ -108,7 +108,7 @@ module.exports = {
          * 5 - error in voting
          * 6 - blocklisted
          */
-        var sql = `SELECT * FROM steem_vote_lists WHERE status = ${status}`;
+        var sql = `SELECT * FROM steem_vote_lists WHERE status = ${status} ORDER BY updated_at DESC`;
         db_con.query(sql, function (err, result, fields) {
             if (err) {
                 throw err;
