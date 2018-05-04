@@ -28,7 +28,7 @@ module.exports = {
     },
 
     get_post_item: (id, callback) => {
-        var sql = `SELECT * FROM steem_vote_lists WHERE id = ${id}`;
+        var sql = `SELECT * FROM steem_vote_lists WHERE id = ${id} LIMIT 1`;
         db_con.query(sql, function (err, result, fields) {
             if (err) {
                 throw err;
@@ -93,6 +93,18 @@ module.exports = {
                 callback('none');
             } else {
                 callback(result[0]);
+                var id = result[0].id;
+                var sql2 = `UPDATE vote_histories SET status = 2 WHERE id = ${id}`;
+                db_con.query(sql2, function (err2, result2, fields2) {
+                    if (err2) {
+                        throw err2;
+                    }
+                    if (result2.length == 0) {
+                        console.error("Failed to prepare for salvage voting", result[0].voter);
+                    } else {
+                        console.log("Prepared for Salvage Voting");
+                    }
+                });
             }
         });
     },

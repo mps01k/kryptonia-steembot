@@ -16,59 +16,61 @@ var voters = require('./voters.json');
     var email = config.account.email;
     var password = config.account.password;
     var voting_interval = config.options.voting_interval;
+    var return_interval = 5000;
 
     w.init = (offset, is_voting, post_data) => {
         if (is_voting == 1) {
             console.log("Start Voting");
-            setTimeout(function () {
-                posts = post_data.posts;
-                s_voters = voters.users;
-                total_round = posts.length * s_voters.length;
-                if (total_round > 0) {
-                    setTimeout(function () {
-                        voter.start_voting_process(post_data, function (return_data) {
-                            round = return_data.round;
-                            posts = return_data.posts;
-                            post_index = return_data.post_index;
-                            voter_index = return_data.voter_index;
-                            if (round <= total_round) {
-                                console.info("Round #", round, "of", total_round, "post_index", post_index, "voter_index", voter_index);
-                                post_data = {
-                                    posts: posts,
-                                    post_index: post_index,
-                                    voter_index: voter_index,
-                                    round: round,
-                                };
+            posts = post_data.posts;
+            s_voters = voters.users;
+            total_round = posts.length * s_voters.length;
+            if (total_round > 0) {
+                setTimeout(() => {
+                    voter.start_voting_process(post_data, function (return_data) {
+                        round = return_data.round;
+                        posts = return_data.posts;
+                        post_index = return_data.post_index;
+                        voter_index = return_data.voter_index;
+                        if (round <= total_round) {
+                            console.info("Round #", round, "of", total_round, "post_index", post_index, "voter_index", voter_index);
+                            post_data = {
+                                posts: posts,
+                                post_index: post_index,
+                                voter_index: voter_index,
+                                round: round,
+                            };
+                            setTimeout(() => {
                                 w.init(0, 1, post_data);
-                            } else {
-                                console.log('Voting Done');
-                                setTimeout(function () {
-                                    w.init(0, 0, null);
-                                }, 5000);
-                            }
-                        });
-                    }, voting_interval);
-                } else {
-                    console.log('Nothing to Vote');
-                    setTimeout(function () {
-                        w.init(0, 0, null);
-                    }, 5000);
-                }
-            }, 5000);
+                            }, 1000);
+                        } else {
+                            console.log('Voting Done');
+                            setTimeout(() => {
+                                w.init(0, 0, null);
+                            }, return_interval);
+                        }
+                    });
+                }, voting_interval);
+            } else {
+                console.log('Nothing to Vote');
+                setTimeout(() => {
+                    w.init(0, 0, null);
+                }, return_interval);
+            }
         } else if (is_voting == 2) {
             console.log("Start Salvage Voting");
             salvager.salvage_candidate(function (s_result) {
                 if (s_result == 'all-done') {
                     console.log('Salvage Voting Done');
-                    setTimeout(function () {
+                    setTimeout(() => {
                         w.init(0, 0, null);
                     }, 5000);
                 } else {
-                    setTimeout(function () {
+                    setTimeout(() => {
                         getter.get_post_item(s_result.item_id, function (g_res) {
                             voter_list = voters.users;
                             voter_list.forEach((val, key) => {
-                                if (val.username == g_res.voter) {
+                                if (val.username == s_result.voter) {
+                                    console.log("Salvage Voting of", s_result.voter, "for ITEM ID", s_result.item_id);
                                     voter.get_permalink(g_res.link, function (permalink) {
                                         item = {
                                             id: g_res.id,
@@ -76,20 +78,20 @@ var voters = require('./voters.json');
                                             author: g_res.author,
                                             permalink: permalink,
                                         };
-                                        voter = {
+                                        this_voter = {
                                             username: val.username,
                                             password: val.password
                                         };
-                                        voter.vote_it(item, voter, s_result.weight, function (v_res) {
+                                        voter.vote_it(item, this_voter, s_result.weight, function (v_res) {
                                             console.log("Salvage Voting:", v_res);
-                                            setTimeout(function () {
+                                            setTimeout(() => {
                                                 w.init(0, 2, null);
                                             }, 5000);
                                         });
                                     });
                                 }
                             });
-                            setTimeout(function () {
+                            setTimeout(() => {
                                 w.init(0, 0, null);
                             }, 5000);
                         });
@@ -100,7 +102,9 @@ var voters = require('./voters.json');
             console.info("Offset", offset);
             fetcher.fetch_tasks(host, offset, function (result) {
                 if (parseInt(result.partial_count) > 0) {
-                    w.init(parseInt(result.offset) + parseInt(result.partial_count), 0, null);
+                    setTimeout(() => {
+                        w.init(parseInt(result.offset) + parseInt(result.partial_count), 0, null);
+                    }, 5000);
                 } else {
                     console.log("Nothing to Fetch Start Voting Phase");
                     getter.get_all_unvoted(function (q_result) {
@@ -116,7 +120,7 @@ var voters = require('./voters.json');
                                 voter_index: 0,
                                 round: 1,
                             };
-                            setTimeout(function () {
+                            setTimeout(() => {
                                 w.init(0, 1, post_data);
                             }, 5000);
                         }

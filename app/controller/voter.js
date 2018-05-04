@@ -414,57 +414,71 @@ module.exports = {
 
     comment_to_it: (item, voter, weight_type, callback) => {
         if (config.options.enable_comment === 1) {
-            wif = steem.auth.toWif(voter.username, voter.password, 'posting');
-
-            parentAuthor = item.author;
-            parentPermalink = item.permalink;
-            commentPermlink = steem.formatter.commentPermlink(parentAuthor, parentPermalink);
-
-            author = voter.username;
-            permalink = commentPermlink;
-            title = "Comment from kryptonia.io";
-            jsonMetadata = {
-                "tags": [
-                    "kryptonia",
-                    "superiorcoin",
-                    "cryptobabe"
-                ]
-            };
-
-            if (weight_type == 'max') {
-                console.info("Max Commenting");
-                body = `Congratulations! You got a <b>100% upvote</b> from @kryptonia Steem bot for following the conditions:
-
-1. You ran a task on <a href="http://csyd.es/Kryptonia">Kryptonia.io</a> and got upvoted from the Kryptonia-Steemit bot.
-*For those who want to join the growing community, grab your account here: <a href="http://csyd.es/Kryptonia">kryptonia.io</a>.
-2. You used the tags <a href="https://steemit.com/trending/kryptonia">KRYPTONIA</a> & <a href="https://steemit.com/trending/superiorcoin">SUPERIORCOIN</a> in your  Steemit post.
-3. The Steemit reputation score was above <b>25</b>.`;
-                steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
-                    // console.log(err, result);
-                    if (err == null) {
-                        callback("Not Commented");
+            steem.api.getContentReplies(item.author, item.permalink, function (err, check_result) {
+                found = 0;
+                check_result.forEach(element => {
+                    console.log(element.author);
+                    if (element.author == voters.commenter.username) {
+                        found = 1;
                     }
-                    setter.comment_status(item, voter);
-                    callback("Commented");
                 });
-            } else if (weight_type == 'min') {
-                console.info("Min Commenting");
-                body = `Congratulations! You got a <b>10% upvote</b> from @kryptonia Steem bot!  
-If you want to get 100% upvote, these are the conditions:
+                if (found == 0) {
+                    wif = steem.auth.toWif(voters.commenter.username, voters.commenter.password, 'posting');
 
-1. Only people who run a task on <a href="http://csyd.es/Kryptonia">Kryptonia.io</a> who can get an upvote from the Kryptonia-Steemit bot.
-*If you do not have an account, grab here <a href="http://csyd.es/Kryptonia">kryptonia.io</a>.
-2. Users must use the tags <a href="https://steemit.com/trending/kryptonia">KRYPTONIA</a> & <a href="https://steemit.com/trending/superiorcoin">SUPERIORCOIN</a> in their Steemit post.
-3. The Steemit reputation score is not below <b>25</b>.`;
-                steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
-                    // console.log(err, result);
-                    if (err == null) {
-                        callback("Not Commented");
+                    parentAuthor = item.author;
+                    parentPermalink = item.permalink;
+                    commentPermlink = steem.formatter.commentPermlink(parentAuthor, parentPermalink);
+
+                    author = voters.commenter.username;
+                    permalink = commentPermlink;
+                    title = "Comment from kryptonia.io";
+                    jsonMetadata = {
+                        "tags": [
+                            "kryptonia",
+                            "superiorcoin",
+                            "cryptobabe"
+                        ]
+                    };
+
+                    if (weight_type == 'max') {
+                        console.info("Max Commenting");
+                        body = `Congratulations! You recieved a <b style="color: green;">100%</b> upvote from @kryptoniabot and @kryptonia.
+
+Remember to receive votes from @kryptoniabot
+1. Run a task on https://Kryptonia.io.
+*For those who want to join the growing community, get your free account here:  http://csyd.es/Kryptonia
+2. Use the tags KRYPTONIA & SUPERIORCOIN in your  Steemit post.
+3. Steemit reputation score above 25.`;
+                        steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
+                            // console.log(err, result);
+                            if (err == null) {
+                                callback("Not Commented");
+                            }
+                            setter.comment_status(item.id, voters.commenter.username);
+                            callback("Commented");
+                        });
+                    } else if (weight_type == 'min') {
+                        console.info("Min Commenting");
+                        body = `Congratulations! You received a <b style="color: red;">10%</b> upvote from @kryptoniabot and @kryptonia.
+
+Remember to receive votes from @kryptoniabot
+1. Run a task on https://Kryptonia.io.
+*For those who want to join the growing community, get your free account here:  http://csyd.es/Kryptonia
+2. Use the tags KRYPTONIA & SUPERIORCOIN in your  Steemit post for 100% vote.
+3. Steemit reputation score above 25.`;
+                        steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
+                            // console.log(err, result);
+                            if (err == null) {
+                                callback("Not Commented");
+                            }
+                            setter.comment_status(item.id, voters.commenter.username);
+                            callback("Commented");
+                        });
                     }
-                    setter.comment_status(item, voter);
-                    callback("Commented");
-                });
-            }
+                } else {
+                    callback("Already Commented");
+                }
+            });
         } else {
             callback("Comment is not enabled");
         }
