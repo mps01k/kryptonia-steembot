@@ -11,6 +11,10 @@
         "kryptonia",
         "superiorcoin"
     ],
+    "commenter": {
+        "username": "",
+        "password": ""
+    },
     "max_weight": 10000,
     "min_weight": 100
 }
