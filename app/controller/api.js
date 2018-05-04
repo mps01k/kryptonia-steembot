@@ -97,6 +97,49 @@ module.exports = {
         });
     },
 
+    get_voters_lists: (callback) => {
+        console.log('--> Getting Voters List');
+        getter.get_voters_lists(function(result) {
+            if (result != 'none') {
+                callback(result2);
+            } else {
+                callback('Empty');
+            }
+        });
+    },
+
+    attempt: (username, epassword, callback) => {
+        console.log('--> Attempting to login');
+        password = module.exports.epass_to_pass(epassword);
+        getter.match_credentials(username, password, function (result) {
+            if (result == 'none') {
+                callback('Credentials Not Matched');
+            } else {
+                callback({
+                    username: result.username,
+                    epass: module.exports.encode_ep(result.username + ':' + result.password)
+                });
+            }
+        });
+    },
+
+    authenticate: (username, ep, callback) => {
+        console.log('Trying to Authenticate');
+        getter.check_credentials(username, function(res) {
+            console.error(username, res);
+            if (res == 'not-found') {
+                callback('invalid');
+            } else {
+                console.log('found');
+                if (module.exports.encode_ep(username + ':' + res.password) == ep) {
+                    callback('valid');
+                } else {
+                    callback('invalid');
+                }
+            }
+        });
+    },
+
     encode_ep(str) {
         str = str + config.options.salt;
         var base = Buffer.from(str).toString('base64');
@@ -107,5 +150,11 @@ module.exports = {
         var str = Buffer.from(base, 'base64').toString();
         str = str.substring(0, str.length - config.options.salt.length);
         return str;
+    },
+
+    epass_to_pass(epass) {
+        pass = module.exports.decode_ep(epass);
+        pass = pass.substring(pass.indexOf(':') + 1);
+        return pass;
     },
 };

@@ -102,8 +102,21 @@ var getter = require('./app/model/getter.js');
         });
 
         app.get('/api/get-voters-list', function (req, res) {
-            console.log(req.headers.authorization);
-            console.log(req.headers.username);
+            api.authenticate(req.headers.username, req.headers.authorization, function(result) {
+                if (result == 'valid') {
+                    api.get_voters_lists(function(result2) {
+                        res.json(result2);
+                    });
+                } else {
+                    res.json('Not Authenticated');
+                }
+            });
+        });
+
+        app.post('/api/login', function (req, res) {
+            api.attempt(req.body.username, req.body.epass, function(result) {
+                res.json(result);
+            });
         });
     };
 

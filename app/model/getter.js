@@ -176,4 +176,46 @@ module.exports = {
             }
         });
     },
+
+    check_credentials: (username, callback) => {
+        var sql = `SELECT * FROM users WHERE username = '${username}' AND status = 1 LIMIT 1`;
+        db_con.query(sql, function (err, result, fields) {
+            if (err) {
+                throw err;
+            }
+            if (result.length == 0) {
+                callback('not-found');
+            } else {
+                callback(result[0]);
+            }
+        });
+    },
+
+    get_voters_lists: (callback) => {
+        var sql = `SELECT * FROM voters ORDER BY created_at DESC`;
+        db_con.query(sql, function (err, result, fields) {
+            if (err) {
+                throw err;
+            }
+            if (result.length == 0) {
+                callback('none');
+            } else {
+                callback(result);
+            }
+        });
+    },
+
+    match_credentials: (username, password, callback) => {
+        var sql = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}' AND status = 1 LIMIT 1`;
+        db_con.query(sql, function (err, result, fields) {
+            if (err) {
+                throw err;
+            }
+            if (result.length == 0) {
+                callback('none');
+            } else {
+                callback(result[0]);
+            }
+        });
+    },
 };

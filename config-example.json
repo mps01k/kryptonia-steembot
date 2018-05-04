@@ -12,6 +12,7 @@
     },
     "options": {
         "enable_comment": 1,
-        "salt": "salt"
+        "salt": "salt",
+        "voting_interval": 1000
     }
 }
