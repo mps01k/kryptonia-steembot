@@ -101,7 +101,7 @@ module.exports = {
         console.log('--> Getting Voters List');
         getter.get_voters_lists(function(result) {
             if (result != 'none') {
-                callback(result2);
+                callback(result);
             } else {
                 callback('Empty');
             }
