@@ -395,7 +395,7 @@ module.exports = {
                 };
                 setter.save_history(new_item);
                 setter.set_status(item.id, 5);
-                callback('Not Voted');
+                callback('Not Voted!');
             } else {
                 new_item = {
                     item_id: item.id,
@@ -407,7 +407,7 @@ module.exports = {
                 };
                 setter.save_history(new_item);
                 setter.set_status(item.id, 1);
-                callback('Voted');
+                callback('Voted!');
             }
         });
     },

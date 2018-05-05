@@ -2,6 +2,8 @@ var mysql = require('mysql');
 var moment = require('moment');
 
 var config = require('./../../config.json');
+var getter = require('./getter');
+var voters = require('./../../voters.json');
 
 var db_con = mysql.createConnection({
     host: config.database.host,
@@ -34,26 +36,60 @@ module.exports = {
                         [item.item_id, item.voter, item.weight, item.status, item.created_at, item.updated_at],
                     ];
                     var sql = `INSERT INTO vote_histories (item_id, voter, weight, status, created_at, updated_at) VALUES ?`;
-                    db_con.query(sql, [values], function (err, result) {
-                        if (err) {
+                    db_con.query(sql, [values], function (err2, result) {
+                        if (err2) {
                             // throw err;
                             console.error('History Item Not Saved');
                         }
-                        console.log('Item', item.item_id, "Voted by", item.voter, "Status", item.status);
+                        if (item.status == 1) {
+                            getter.get_post_item(item.item_id, function (res) {
+                                new_count = res.current_votes + 1;
+                                total = voters.users.length;
+                                module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total} WHERE id = ${res.id}`, function (err1, res1) {
+                                    if (err1 == null) {
+                                        console.log('Current Count Updated');
+                                    }
+                                });
+                            });
+                        }
+                        console.log('[INSERT] Item', item.item_id, "Voted by", item.voter, "Status", item.status);
                     });
                 } else {
                     if (item.status == 1) {
                         id = res[0].id;
                         var sql = `UPDATE vote_histories SET status = 1 WHERE id = ${id}`;
-                        db_con.query(sql, function (err, result) {
-                            if (err) {
+                        db_con.query(sql, function (err2, result) {
+                            if (err2) {
                                 // throw err;
                                 console.error('History Item Not Saved');
                             }
-                            console.log('Item', item.item_id, "Voted by", item.voter, "Status", item.status);
+                            getter.get_post_item(item.item_id, function (res) {
+                                new_count = res.current_votes + 1;
+                                total = voters.users.length;
+                                module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total} WHERE id = ${res.id}`, function (err1, res1) {
+                                    if (err1 == null) {
+                                        console.log('Current Count Updated');
+                                    }
+                                });
+                            });
+                            console.log('[UPDATE] Item', item.item_id, "Voted by", item.voter, "Status", item.status);
                         });
                     }
                 }
+            }
+        });
+    },
+
+    set_history_status: (id, status) => {
+        var sql2 = `UPDATE vote_histories SET status = ${status} WHERE id = ${id}`;
+        db_con.query(sql2, function (err, result, fields) {
+            if (err) {
+                throw err;
+            }
+            if (result.length == 0) {
+                console.error("Failed to prepare for salvage voting. History ID:", id);
+            } else {
+                console.log("Prepared for Salvage Voting");
             }
         });
     },
@@ -89,6 +125,12 @@ module.exports = {
                 console.error('Comment Status Not Updated');
             }
             console.log("Item", item.id, "'commented' Updated");
+        });
+    },
+
+    query: (sql, callback) => {
+        db_con.query(sql, function (err, result) {
+            callback(err, result);
         });
     },
 };

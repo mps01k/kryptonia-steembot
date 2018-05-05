@@ -1,6 +1,7 @@
 var mysql = require('mysql');
 
 var config = require('./../../config.json');
+var setter = require('./setter');
 
 var db_con = mysql.createConnection({
     host: config.database.host,
@@ -94,17 +95,7 @@ module.exports = {
             } else {
                 callback(result[0]);
                 var id = result[0].id;
-                var sql2 = `UPDATE vote_histories SET status = 2 WHERE id = ${id}`;
-                db_con.query(sql2, function (err2, result2, fields2) {
-                    if (err2) {
-                        throw err2;
-                    }
-                    if (result2.length == 0) {
-                        console.error("Failed to prepare for salvage voting", result[0].voter);
-                    } else {
-                        console.log("Prepared for Salvage Voting");
-                    }
-                });
+                setter.set_history_status(id, 2);
             }
         });
     },
