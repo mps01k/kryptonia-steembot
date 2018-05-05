@@ -1,7 +1,7 @@
 var mysql = require('mysql');
 
 var config = require('./../../config.json');
-var setter = require('./setter');
+var setter = require('./setter.js');
 
 var db_con = mysql.createConnection({
     host: config.database.host,
@@ -29,7 +29,7 @@ module.exports = {
     },
 
     get_post_item: (id, callback) => {
-        var sql = `SELECT * FROM steem_vote_lists WHERE id = ${id} LIMIT 1`;
+        var sql = `SELECT * FROM steem_vote_lists WHERE id = ${id}`;
         db_con.query(sql, function (err, result, fields) {
             if (err) {
                 throw err;

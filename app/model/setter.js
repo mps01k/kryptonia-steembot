@@ -2,7 +2,6 @@ var mysql = require('mysql');
 var moment = require('moment');
 
 var config = require('./../../config.json');
-var getter = require('./getter');
 var voters = require('./../../voters.json');
 
 var db_con = mysql.createConnection({
@@ -42,10 +41,10 @@ module.exports = {
                             console.error('History Item Not Saved');
                         }
                         if (item.status == 1) {
-                            getter.get_post_item(item.item_id, function (res) {
-                                new_count = res.current_votes + 1;
+                            module.exports.query(`SELECT * FROM steem_vote_lists WHERE id = ${item.item_id} LIMIT 1`, function (get_err, get_res) {
+                                new_count = get_res[0].current_votes + 1;
                                 total = voters.users.length;
-                                module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total} WHERE id = ${res.id}`, function (err1, res1) {
+                                module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total} WHERE id = ${get_res[0].id}`, function (err1, res1) {
                                     if (err1 == null) {
                                         console.log('Current Count Updated');
                                     }
@@ -63,10 +62,10 @@ module.exports = {
                                 // throw err;
                                 console.error('History Item Not Saved');
                             }
-                            getter.get_post_item(item.item_id, function (res) {
-                                new_count = res.current_votes + 1;
+                            module.exports.query(`SELECT * FROM steem_vote_lists WHERE id = ${item.item_id} LIMIT 1`, function (get_err, get_res) {
+                                new_count = get_res[0].current_votes + 1;
                                 total = voters.users.length;
-                                module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total} WHERE id = ${res.id}`, function (err1, res1) {
+                                module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total} WHERE id = ${get_res[0].id}`, function (err1, res1) {
                                     if (err1 == null) {
                                         console.log('Current Count Updated');
                                     }
