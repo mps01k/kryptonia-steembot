@@ -381,10 +381,10 @@ module.exports = {
 
     vote_it: (item, voter, weight, callback) => {
         console.log("Voting TaskID:", item.task_id);
-        if (voter.password === '') {
-            wif = voter.wif;
-        } else {
+        if (voter.password != '') {
             wif = steem.auth.toWif(voter.username, voter.password, 'posting');            
+        } else {
+            wif = voter.wif;
         }
         setTimeout(() => {
             steem.broadcast.vote(wif, voter.username, item.author, item.permalink, weight, function (err, result) {
@@ -429,10 +429,10 @@ module.exports = {
                     }
                 });
                 if (found == 0) {                    
-                    if (voters.commenter.password === '') {
-                        wif = voters.commenter.wif;
-                    } else {
+                    if (voters.commenter.password != '') {
                         wif = steem.auth.toWif(voters.commenter.username, voters.commenter.password, 'posting');
+                    } else {
+                        wif = voters.commenter.wif;
                     }
 
                     parentAuthor = item.author;
