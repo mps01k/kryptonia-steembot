@@ -80,7 +80,8 @@ var voters = require('./voters.json');
                                         };
                                         this_voter = {
                                             username: val.username,
-                                            password: val.password
+                                            password: val.password,
+                                            wif: val.wif
                                         };
                                         voter.vote_it(item, this_voter, s_result.weight, function (v_res) {
                                             console.log("Salvage Voting:", v_res);
