@@ -381,7 +381,11 @@ module.exports = {
 
     vote_it: (item, voter, weight, callback) => {
         console.log("Voting TaskID:", item.task_id);
-        wif = steem.auth.toWif(voter.username, voter.password, 'posting');
+        if (voter.wif != '') {
+            wif = voter.wif;
+        } else {
+            wif = steem.auth.toWif(voter.username, voter.password, 'posting');            
+        }
         steem.broadcast.vote(wif, voter.username, item.author, item.permalink, weight, function (err, result) {
             // console.log(err);
             if (err !== null) {
@@ -442,11 +446,11 @@ module.exports = {
 
                     if (weight_type == 'max') {
                         console.info("Max Commenting");
-                        body = `Congratulations! You recieved a <b style="color: green;">100%</b> upvote from @kryptoniabot and @kryptonia.
+                        body = `Congratulations! You received a <b style="color: green;">100%</b> upvote from @kryptoniabot.
 
 Remember to receive votes from @kryptoniabot
-1. Run a task on https://Kryptonia.io.
-*For those who want to join the growing community, get your free account here:  http://csyd.es/Kryptonia
+1. Run a task on <a href="http://csyd.es/Kryptonia">Kryptonia</a>.
+*For those who want to join the growing community, get your free account here: <a href="http://csyd.es/Kryptonia">Kryptonia Account</a>
 2. Use the tags KRYPTONIA & SUPERIORCOIN in your  Steemit post.
 3. Steemit reputation score above 25.`;
                         steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
@@ -459,11 +463,11 @@ Remember to receive votes from @kryptoniabot
                         });
                     } else if (weight_type == 'min') {
                         console.info("Min Commenting");
-                        body = `Congratulations! You received a <b style="color: red;">10%</b> upvote from @kryptoniabot and @kryptonia.
+                        body = `Congratulations! You received a <b style="color: red;">10%</b> upvote from @kryptoniabot.
 
 Remember to receive votes from @kryptoniabot
-1. Run a task on https://Kryptonia.io.
-*For those who want to join the growing community, get your free account here:  http://csyd.es/Kryptonia
+1. Run a task on <a href="http://csyd.es/Kryptonia">Kryptonia</a>.
+*For those who want to join the growing community, get your free account here: <a href="http://csyd.es/Kryptonia">Kryptonia Account</a>
 2. Use the tags KRYPTONIA & SUPERIORCOIN in your  Steemit post for 100% vote.
 3. Steemit reputation score above 25.`;
                         steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
