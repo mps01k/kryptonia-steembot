@@ -117,7 +117,7 @@ module.exports = {
 
     comment_status: (item_id, voter) => {
         updated_at = moment().format('YYYY-MM-DD HH:mm:ss');
-        var sql = `UPDATE steem_vote_lists SET commented = 1, updated_at = '${updated_at}' WHERE item_id = ${item_id} AND voter = '${voter}'`;
+        var sql = `UPDATE vote_histories SET commented = 1, updated_at = '${updated_at}' WHERE item_id = ${item_id} AND voter = '${voter}'`;
         db_con.query(sql, function (err, result) {
             if (err != null) {
                 // throw err;

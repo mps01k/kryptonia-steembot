@@ -381,39 +381,41 @@ module.exports = {
 
     vote_it: (item, voter, weight, callback) => {
         console.log("Voting TaskID:", item.task_id);
-        if (voter.wif != '') {
+        if (voter.password === '') {
             wif = voter.wif;
         } else {
             wif = steem.auth.toWif(voter.username, voter.password, 'posting');            
         }
-        steem.broadcast.vote(wif, voter.username, item.author, item.permalink, weight, function (err, result) {
-            // console.log(err);
-            if (err !== null) {
-                new_item = {
-                    item_id: item.id,
-                    voter: voter.username,
-                    weight: weight,
-                    status: 0,
-                    created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    updated_at: moment().format('YYYY-MM-DD HH:mm:ss'),
-                };
-                setter.save_history(new_item);
-                setter.set_status(item.id, 5);
-                callback('Not Voted!');
-            } else {
-                new_item = {
-                    item_id: item.id,
-                    voter: voter.username,
-                    weight: weight,
-                    status: 1,
-                    created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    updated_at: moment().format('YYYY-MM-DD HH:mm:ss'),
-                };
-                setter.save_history(new_item);
-                setter.set_status(item.id, 1);
-                callback('Voted!');
-            }
-        });
+        setTimeout(() => {
+            steem.broadcast.vote(wif, voter.username, item.author, item.permalink, weight, function (err, result) {
+                // console.log(err);
+                if (err !== null) {
+                    new_item = {
+                        item_id: item.id,
+                        voter: voter.username,
+                        weight: weight,
+                        status: 0,
+                        created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        updated_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    };
+                    setter.save_history(new_item);
+                    setter.set_status(item.id, 5);
+                    callback('Not Voted!');
+                } else {
+                    new_item = {
+                        item_id: item.id,
+                        voter: voter.username,
+                        weight: weight,
+                        status: 1,
+                        created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        updated_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    };
+                    setter.save_history(new_item);
+                    setter.set_status(item.id, 1);
+                    callback('Voted!');
+                }
+            });
+        }, 1000);        
     },
 
     comment_to_it: (item, voter, weight_type, callback) => {
@@ -421,13 +423,13 @@ module.exports = {
             steem.api.getContentReplies(item.author, item.permalink, function (err, check_result) {
                 found = 0;
                 check_result.forEach(element => {
-                    console.log(element.author);
+                    // console.log(element.author);
                     if (element.author == voters.commenter.username) {
                         found = 1;
                     }
                 });
                 if (found == 0) {                    
-                    if (voters.commenter.wif != '') {
+                    if (voters.commenter.password === '') {
                         wif = voters.commenter.wif;
                     } else {
                         wif = steem.auth.toWif(voters.commenter.username, voters.commenter.password, 'posting');
