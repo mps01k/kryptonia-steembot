@@ -46,7 +46,7 @@ module.exports = {
                 round: round + 1,
             };
             if (res == 'validated') {
-                console.log("Successfully Voted");                
+                console.log("Successfully Voted");
                 callback(return_data);
             } else {
                 console.log(res);
@@ -381,27 +381,17 @@ module.exports = {
 
     vote_it: (item, voter, weight, callback) => {
         console.log("Voting TaskID:", item.task_id);
-        if (voter.password != '') {
-            wif = steem.auth.toWif(voter.username, voter.password, 'posting');            
+        if (voter.password !== '') {
+            console.log("Vote Using Password");
+            wif = steem.auth.toWif(voter.username, voter.password, 'posting');
         } else {
+            console.log("Vote using Posting Key");
             wif = voter.wif;
         }
-        setTimeout(() => {
-            steem.broadcast.vote(wif, voter.username, item.author, item.permalink, weight, function (err, result) {
-                // console.log(err);
-                if (err !== null) {
-                    new_item = {
-                        item_id: item.id,
-                        voter: voter.username,
-                        weight: weight,
-                        status: 0,
-                        created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
-                        updated_at: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    };
-                    setter.save_history(new_item);
-                    setter.set_status(item.id, 5);
-                    callback('Not Voted!');
-                } else {
+        steem.broadcast.vote(wif, voter.username, item.author, item.permalink, weight, function (err, result) {
+            // console.log(err);
+            if (err !== null) {
+                if (err.code == -32000) {
                     new_item = {
                         item_id: item.id,
                         voter: voter.username,
@@ -413,9 +403,33 @@ module.exports = {
                     setter.save_history(new_item);
                     setter.set_status(item.id, 1);
                     callback('Voted!');
+                } else {
+                    new_item = {
+                        item_id: item.id,
+                        voter: voter.username,
+                        weight: weight,
+                        status: 0,
+                        created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        updated_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    };
+                    setter.save_history(new_item);
+                    setter.set_status(item.id, 5);
+                    callback('Not Voted!');
                 }
-            });
-        }, 1000);        
+            } else {
+                new_item = {
+                    item_id: item.id,
+                    voter: voter.username,
+                    weight: weight,
+                    status: 1,
+                    created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    updated_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                };
+                setter.save_history(new_item);
+                setter.set_status(item.id, 1);
+                callback('Voted!');
+            }
+        });
     },
 
     comment_to_it: (item, voter, weight_type, callback) => {
@@ -428,10 +442,12 @@ module.exports = {
                         found = 1;
                     }
                 });
-                if (found == 0) {                    
-                    if (voters.commenter.password != '') {
+                if (found == 0) {
+                    if (voters.commenter.password !== '') {
+                        console.log("Comment Using Password");
                         wif = steem.auth.toWif(voters.commenter.username, voters.commenter.password, 'posting');
                     } else {
+                        console.log("Comment Using Posting Key");
                         wif = voters.commenter.wif;
                     }
 
