@@ -426,8 +426,12 @@ module.exports = {
                         found = 1;
                     }
                 });
-                if (found == 0) {
-                    wif = steem.auth.toWif(voters.commenter.username, voters.commenter.password, 'posting');
+                if (found == 0) {                    
+                    if (voters.commenter.wif != '') {
+                        wif = voters.commenter.wif;
+                    } else {
+                        wif = steem.auth.toWif(voters.commenter.username, voters.commenter.password, 'posting');
+                    }
 
                     parentAuthor = item.author;
                     parentPermalink = item.permalink;
