@@ -41,8 +41,8 @@ module.exports = {
                             console.error('History Item Not Saved');
                         }
                         if (item.status == 1) {
-                            module.exports.query(`SELECT * FROM steem_vote_lists WHERE id = ${item.item_id} LIMIT 1`, function (get_err, get_res) {
-                                new_count = get_res[0].current_votes + 1;
+                            module.exports.query(`SELECT id FROM vote_histories WHERE item_id = ${item.item_id}`, function (get_err, get_res) {
+                                new_count = get_res[0].length;
                                 total = voters.users.length;
                                 module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total} WHERE id = ${get_res[0].id}`, function (err1, res1) {
                                     if (err1 == null) {
@@ -62,8 +62,8 @@ module.exports = {
                                 // throw err;
                                 console.error('History Item Not Saved');
                             }
-                            module.exports.query(`SELECT * FROM steem_vote_lists WHERE id = ${item.item_id} LIMIT 1`, function (get_err, get_res) {
-                                new_count = get_res[0].current_votes + 1;
+                            module.exports.query(`SELECT id FROM vote_histories WHERE item_id = ${item.item_id}`, function (get_err, get_res) {
+                                new_count = get_res[0].length;
                                 total = voters.users.length;
                                 module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total} WHERE id = ${get_res[0].id}`, function (err1, res1) {
                                     if (err1 == null) {
