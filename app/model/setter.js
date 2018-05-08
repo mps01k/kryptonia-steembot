@@ -19,8 +19,8 @@ module.exports = {
         var sql = `INSERT INTO steem_vote_lists (task_id, author, link, by_bot, status, created_at, updated_at) VALUES ?`;
         db_con.query(sql, [values], function (err, result) {
             if (err) {
-                // throw err;
                 console.error('Item Not Saved');
+                throw err;
             }
             console.log('Item Saved');
         });
@@ -37,8 +37,8 @@ module.exports = {
                     var sql = `INSERT INTO vote_histories (item_id, voter, weight, status, created_at, updated_at) VALUES ?`;
                     db_con.query(sql, [values], function (err2, result) {
                         if (err2) {
-                            // throw err;
                             console.error('History Item Not Saved');
+                            throw err;
                         }
                         if (item.status == 1) {
                             module.exports.query(`SELECT id FROM vote_histories WHERE item_id = ${item.item_id}`, function (get_err, get_res) {
@@ -59,8 +59,8 @@ module.exports = {
                         var sql = `UPDATE vote_histories SET status = 1, weight = ${item.weight} WHERE id = ${id}`;
                         db_con.query(sql, function (err2, result) {
                             if (err2) {
-                                // throw err;
                                 console.error('History Item Not Saved');
+                                throw err;
                             }
                             module.exports.query(`SELECT id FROM vote_histories WHERE item_id = ${item.item_id}`, function (get_err, get_res) {
                                 new_count = get_res[0].length;
@@ -98,10 +98,10 @@ module.exports = {
         var sql = `UPDATE steem_vote_lists SET status = ${status}, updated_at = '${updated_at}' WHERE id = ${item_id} AND status <> 1`;
         db_con.query(sql, function (err, result) {
             if (err != null) {
-                // throw err;
                 if (internal == false) {
                     console.error('Status Not Updated');
                 }
+                throw err;
             }
             if (internal == false) {
                 console.log("Item", item_id, "Status Updated to", status);
@@ -123,8 +123,8 @@ module.exports = {
                     var sql = `INSERT INTO vote_histories SET item_id = ${item_id}, voter = '${voter}', commented = 1, updated_at = '${updated_at}', created_at = '${updated_at}'`;
                     db_con.query(sql, function (err1, result) {
                         if (err1 != null) {
-                            // throw err;
                             console.error('Comment Status Not Added');
+                            throw err;
                         } else {
                             console.log("Item", item.id, "'commented' Added");
                         }
@@ -133,8 +133,8 @@ module.exports = {
                     var sql = `UPDATE vote_histories SET commented = 1, updated_at = '${updated_at}' WHERE id = ${res[0].id}`;
                     db_con.query(sql, function (err1, result) {
                         if (err1 != null) {
-                            // throw err;
                             console.error('Comment Status Not Updated');
+                            throw err;
                         } else {
                             console.log("Item", item.id, "'commented' Updated");
                         }
