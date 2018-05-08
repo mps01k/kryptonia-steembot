@@ -42,7 +42,7 @@ module.exports = {
                         }
                         if (item.status == 1) {
                             module.exports.query(`SELECT id FROM vote_histories WHERE item_id = ${item.item_id}`, function (get_err, get_res) {
-                                new_count = get_res[0].length;
+                                new_count = get_res.length;
                                 total = voters.users.length;
                                 module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total} WHERE id = ${get_res[0].id}`, function (err1, res1) {
                                     if (err1 == null) {
@@ -63,7 +63,7 @@ module.exports = {
                                 throw err;
                             }
                             module.exports.query(`SELECT id FROM vote_histories WHERE item_id = ${item.item_id}`, function (get_err, get_res) {
-                                new_count = get_res[0].length;
+                                new_count = get_res.length;
                                 total = voters.users.length;
                                 module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total} WHERE id = ${get_res[0].id}`, function (err1, res1) {
                                     if (err1 == null) {
@@ -117,7 +117,7 @@ module.exports = {
 
     comment_status: (item_id, voter) => {
         module.exports.query(`SELECT * FROM vote_histories WHERE item_id = ${item_id} AND voter = '${voter}' LIMIT 1`, (err, res) => {
-            if (err != null) {
+            if (err == null) {
                 updated_at = moment().format('YYYY-MM-DD HH:mm:ss');
                 if (res.length == 0) {
                     var sql = `INSERT INTO vote_histories SET item_id = ${item_id}, voter = '${voter}', commented = 1, updated_at = '${updated_at}', created_at = '${updated_at}'`;
