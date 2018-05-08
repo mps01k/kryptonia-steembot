@@ -502,6 +502,7 @@ Remember to receive votes from @kryptoniabot
                         });
                     }
                 } else {
+                    setter.comment_status(item.id, voters.commenter.username);
                     callback("Already Commented");
                 }
             });
