@@ -44,11 +44,18 @@ module.exports = {
                             module.exports.query(`SELECT id FROM vote_histories WHERE item_id = ${item.item_id}`, function (get_err, get_res) {
                                 new_count = get_res.length;
                                 total = voters.users.length;
-                                module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total} WHERE id = ${get_res[0].id}`, function (err1, res1) {
+                                module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total}, updated_at = '${item.updated_at}' WHERE id = ${item.item_id}`, function (err1, res1) {
                                     if (err1 == null) {
                                         console.log('Current Count Updated');
                                     }
                                 });
+                            });
+                        } else {
+                            total = voters.users.length;
+                            module.exports.query(`UPDATE steem_vote_lists SET total_voters = ${total}, updated_at = '${item.updated_at}' WHERE id = ${item.item_id}`, function (err1, res1) {
+                                if (err1 == null) {
+                                    console.log('Current Total Updated');
+                                }
                             });
                         }
                         console.log('[INSERT] Item', item.item_id, "Voted by", item.voter, "Status", item.status);
@@ -65,13 +72,20 @@ module.exports = {
                             module.exports.query(`SELECT id FROM vote_histories WHERE item_id = ${item.item_id}`, function (get_err, get_res) {
                                 new_count = get_res.length;
                                 total = voters.users.length;
-                                module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total} WHERE id = ${get_res[0].id}`, function (err1, res1) {
+                                module.exports.query(`UPDATE steem_vote_lists SET current_votes = ${new_count}, total_voters = ${total}, updated_at = '${item.updated_at}' WHERE id = ${item.item_id}`, function (err1, res1) {
                                     if (err1 == null) {
                                         console.log('Current Count Updated');
                                     }
                                 });
                             });
                             console.log('[UPDATE] Item', item.item_id, "Voted by", item.voter, "Status", item.status);
+                        });
+                    } else {
+                        total = voters.users.length;
+                        module.exports.query(`UPDATE steem_vote_lists SET total_voters = ${total}, updated_at = '${item.updated_at}' WHERE id = ${item.item_id}`, function (err1, res1) {
+                            if (err1 == null) {
+                                console.log('Current Total Updated');
+                            }
                         });
                     }
                 }
@@ -80,7 +94,8 @@ module.exports = {
     },
 
     set_history_status: (id, status) => {
-        var sql2 = `UPDATE vote_histories SET status = ${status} WHERE id = ${id}`;
+        updated_at = moment().format('YYYY-MM-DD HH:mm:ss');
+        var sql2 = `UPDATE vote_histories SET status = ${status}, updated_at = '${updated_at}' WHERE id = ${id}`;
         db_con.query(sql2, function (err, result, fields) {
             if (err) {
                 throw err;
@@ -126,7 +141,15 @@ module.exports = {
                             console.error('Comment Status Not Added');
                             throw err;
                         } else {
-                            console.log("Item", item.id, "'commented' Added");
+                            item = {
+                                item_id: item_id,
+                                voter: voter,
+                                status: 0,
+                                created_at: updated_at,
+                                updated_at: updated_at
+                            };
+                            module.exports.save_history(item);
+                            console.log("Item", item_id, "'commented' Added");
                         }
                     });
                 } else {
@@ -136,7 +159,7 @@ module.exports = {
                             console.error('Comment Status Not Updated');
                             throw err;
                         } else {
-                            console.log("Item", item.id, "'commented' Updated");
+                            console.log("Item", item_id, "'commented' Updated");
                         }
                     });
                 }
