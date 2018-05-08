@@ -433,81 +433,83 @@ module.exports = {
     },
 
     comment_to_it: (item, voter, weight_type, callback) => {
-        if (config.options.enable_comment === 1) {
-            steem.api.getContentReplies(item.author, item.permalink, function (err, check_result) {
-                found = 0;
-                check_result.forEach(element => {
-                    // console.log(element.author);
-                    if (element.author == voters.commenter.username) {
-                        found = 1;
-                    }
-                });
-                if (found == 0) {
-                    if (voters.commenter.password !== '') {
-                        console.log("Comment Using Password");
-                        wif = steem.auth.toWif(voters.commenter.username, voters.commenter.password, 'posting');
-                    } else {
-                        console.log("Comment Using Posting Key");
-                        wif = voters.commenter.wif;
-                    }
+        if (voter.username == voters.commenter.username) {
+            if (config.options.enable_comment === 1) {
+                steem.api.getContentReplies(item.author, item.permalink, function (err, check_result) {
+                    found = 0;
+                    check_result.forEach(element => {
+                        // console.log(element.author);
+                        if (element.author == voters.commenter.username) {
+                            found = 1;
+                        }
+                    });
+                    if (found == 0) {
+                        if (voters.commenter.password !== '') {
+                            console.log("Comment Using Password");
+                            wif = steem.auth.toWif(voters.commenter.username, voters.commenter.password, 'posting');
+                        } else {
+                            console.log("Comment Using Posting Key");
+                            wif = voters.commenter.wif;
+                        }
 
-                    parentAuthor = item.author;
-                    parentPermalink = item.permalink;
-                    commentPermlink = steem.formatter.commentPermlink(parentAuthor, parentPermalink);
+                        parentAuthor = item.author;
+                        parentPermalink = item.permalink;
+                        commentPermlink = steem.formatter.commentPermlink(parentAuthor, parentPermalink);
 
-                    author = voters.commenter.username;
-                    permalink = commentPermlink;
-                    title = "Comment from kryptonia.io";
-                    jsonMetadata = {
-                        "tags": [
-                            "kryptonia",
-                            "superiorcoin",
-                            "cryptobabe"
-                        ]
-                    };
+                        author = voters.commenter.username;
+                        permalink = commentPermlink;
+                        title = "Comment from kryptonia.io";
+                        jsonMetadata = {
+                            "tags": [
+                                "kryptonia",
+                                "superiorcoin",
+                                "cryptobabe"
+                            ]
+                        };
 
-                    if (weight_type == 'max') {
-                        console.info("Max Commenting");
-                        body = `Congratulations! You received a <b style="color: green;">100%</b> upvote from @kryptoniabot.
+                        if (weight_type == 'max') {
+                            console.info("Max Commenting");
+                            body = `Congratulations! You received a <b style="color: green;">100%</b> upvote from @kryptoniabot.
 
 Remember to receive votes from @kryptoniabot
 1. Run a task on <a href="http://csyd.es/Kryptonia">Kryptonia</a>.
 *For those who want to join the growing community, get your free account here: <a href="http://csyd.es/Kryptonia">Kryptonia Account</a>
 2. Use the tags KRYPTONIA & SUPERIORCOIN in your  Steemit post.
 3. Steemit reputation score above 25.`;
-                        steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
-                            // console.log(err, result);
-                            if (err == null) {
-                                callback("Not Commented");
-                            }
-                            setter.comment_status(item.id, voters.commenter.username);
-                            callback("Commented");
-                        });
-                    } else if (weight_type == 'min') {
-                        console.info("Min Commenting");
-                        body = `Congratulations! You received a <b style="color: red;">10%</b> upvote from @kryptoniabot.
+                            steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
+                                // console.log(err, result);
+                                if (err == null) {
+                                    callback("Not Commented");
+                                }
+                                setter.comment_status(item.id, voters.commenter.username);
+                                callback("Commented");
+                            });
+                        } else if (weight_type == 'min') {
+                            console.info("Min Commenting");
+                            body = `Congratulations! You received a <b style="color: red;">10%</b> upvote from @kryptoniabot.
 
 Remember to receive votes from @kryptoniabot
 1. Run a task on <a href="http://csyd.es/Kryptonia">Kryptonia</a>.
 *For those who want to join the growing community, get your free account here: <a href="http://csyd.es/Kryptonia">Kryptonia Account</a>
 2. Use the tags KRYPTONIA & SUPERIORCOIN in your  Steemit post for 100% vote.
 3. Steemit reputation score above 25.`;
-                        steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
-                            // console.log(err, result);
-                            if (err == null) {
-                                callback("Not Commented");
-                            }
-                            setter.comment_status(item.id, voters.commenter.username);
-                            callback("Commented");
-                        });
+                            steem.broadcast.comment(wif, parentAuthor, parentPermalink, author, permalink, title, body, jsonMetadata, function (err, result) {
+                                // console.log(err, result);
+                                if (err == null) {
+                                    callback("Not Commented");
+                                }
+                                setter.comment_status(item.id, voters.commenter.username);
+                                callback("Commented");
+                            });
+                        }
+                    } else {
+                        setter.comment_status(item.id, voters.commenter.username);
+                        callback("Already Commented");
                     }
-                } else {
-                    setter.comment_status(item.id, voters.commenter.username);
-                    callback("Already Commented");
-                }
-            });
-        } else {
-            callback("Comment is not enabled");
+                });
+            } else {
+                callback("Comment is not enabled");
+            }
         }
     },
 };
