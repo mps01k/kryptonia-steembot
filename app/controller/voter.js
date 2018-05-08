@@ -510,6 +510,8 @@ Remember to receive votes from @kryptoniabot
             } else {
                 callback("Comment is not enabled");
             }
+        } else {
+            callback("Skipped Comment");
         }
     },
 };
