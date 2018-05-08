@@ -56,7 +56,7 @@ module.exports = {
                 } else {
                     if (item.status == 1) {
                         id = res[0].id;
-                        var sql = `UPDATE vote_histories SET status = 1 WHERE id = ${id}`;
+                        var sql = `UPDATE vote_histories SET status = 1, weight = ${item.weight} WHERE id = ${id}`;
                         db_con.query(sql, function (err2, result) {
                             if (err2) {
                                 // throw err;
@@ -116,14 +116,33 @@ module.exports = {
     },
 
     comment_status: (item_id, voter) => {
-        updated_at = moment().format('YYYY-MM-DD HH:mm:ss');
-        var sql = `UPDATE vote_histories SET commented = 1, updated_at = '${updated_at}' WHERE item_id = ${item_id} AND voter = '${voter}'`;
-        db_con.query(sql, function (err, result) {
+        module.exports.query(`SELECT * FROM vote_histories WHERE item_id = ${item_id} AND voter = '${voter}' LIMIT 1`, (err, res) => {
             if (err != null) {
-                // throw err;
-                console.error('Comment Status Not Updated');
+                updated_at = moment().format('YYYY-MM-DD HH:mm:ss');
+                if (res.length == 0) {
+                    var sql = `INSERT INTO vote_histories SET item_id = ${item_id}, voter = '${voter}', commented = 1, updated_at = '${updated_at}', created_at = '${updated_at}'`;
+                    db_con.query(sql, function (err1, result) {
+                        if (err1 != null) {
+                            // throw err;
+                            console.error('Comment Status Not Added');
+                        } else {
+                            console.log("Item", item.id, "'commented' Added");
+                        }
+                    });
+                } else {
+                    var sql = `UPDATE vote_histories SET commented = 1, updated_at = '${updated_at}' WHERE id = ${res[0].id}`;
+                    db_con.query(sql, function (err1, result) {
+                        if (err1 != null) {
+                            // throw err;
+                            console.error('Comment Status Not Updated');
+                        } else {
+                            console.log("Item", item.id, "'commented' Updated");
+                        }
+                    });
+                }
+            } else {
+                throw err;
             }
-            console.log("Item", item.id, "'commented' Updated");
         });
     },
 
